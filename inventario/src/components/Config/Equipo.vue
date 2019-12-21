@@ -193,6 +193,52 @@
 
         </div>  
 
+               
+      <template>
+  <v-row justify="center">
+    <v-dialog v-model="dialog_modal" fullscreen hide-overlay transition="dialog-bottom-transition">
+    
+      <v-card>
+        <v-toolbar dark color="primary">
+          <v-btn icon dark @click="dialog_modal = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Datos Propietario</v-toolbar-title>
+          <v-spacer></v-spacer>
+          
+        </v-toolbar>
+        <v-list three-line subheader>
+          <v-subheader></v-subheader>
+          
+          <v-list-item>
+            <v-list-item-content v-for="(row,index) in items_propietario" :key="index">
+              <v-list-item-title v-if="row.estado == 1">Nombre : {{row.usuario}}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+
+                   <v-data-table
+                        v-model="selected"
+                        :headers="headers2"
+                        :items="items_propietario"
+                        :single-select="singleSelect"
+                        :search="search"
+                        item-key="id"
+                        show-select
+                        class="elevation-1"
+                        disable-sort
+                        >
+                  
+                    </v-data-table>
+                     
+  
+        </v-list>
+      
+      </v-card>
+    </v-dialog>
+  </v-row>
+</template>
+
         <div class=" align-content-end flex-grow-1">
                     
                     <template>  
@@ -210,7 +256,10 @@
                                 <v-spacer></v-spacer>
 
                                 <div class="text-center">
-                                     
+                                      <!-- <template v-slot:activator="{ on }"> -->
+                                        <!-- <v-btn color="primary" dark v-on="on">Ver Propietario</v-btn> -->
+                                    <!-- </template> -->
+                                     <v-btn class="ma-2" tile color="primary" dark @click="mostarHistorial">Ver Propietario</v-btn>  
                                     <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
                                     <v-btn class="ma-2" tile outlined color="success" @click="editarEvento">
                                     <v-icon left>mdi-pencil</v-icon> Editar
@@ -280,12 +329,17 @@ import axios from 'axios';
         name:'Equipo',
         data(){
             return{
-                
+                dialog_modal: false,
+                notifications: false,
+                sound: true,
+                widgets: false,
+                items_propietario: [],
                 select_marca:{ state: '', abbr: '' },
                 select_tipo_equipo:{ state: '', abbr: '' },
                 items_marca:[],
                 items_tipo_equipo:[],
                 idmarca:0,
+                allPropietario :false,
                 idtipo_equipo:0,
                 nombre_equipo:'',
                 usuario_equipo:'',
@@ -309,6 +363,17 @@ import axios from 'axios';
                 search: '',        
                 singleSelect:true,
                 selected: [],
+                headers2 :[
+                      {
+                    text: 'Id',          
+                    value: 'id',
+                    },          
+                    { text: 'Area', value: 'area' },
+                    { text: 'Usuario', value: 'usuario' },
+                    { text: 'Nombre Equipo', value: 'nombre_equipo' },
+                    { text: 'Estado', value: 'estado' },
+                    { text: 'id_equipo', value: 'id_equipo'}
+                ],
                 headers: [
 
                 {
@@ -340,6 +405,15 @@ import axios from 'axios';
                     }
             },
             methods:{
+                mostarHistorial(id){
+                    var newItems =  this.items_propietario.filter(
+                        items=>items.id_equipo === id
+                    )
+                    
+                    this.items_propietario = newItems;
+
+                    
+                },
                 LlenarTipos(){
                         axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                         .then(response => {
@@ -392,11 +466,24 @@ import axios from 'axios';
                         })
                     },
 
-                                    agregarEvento(){
+                agregarEvento(){
                    if(this.mostrar_agregar == true){
                        this.mostrar_agregar = false;
                    }
                    else this.mostrar_agregar = true;
+                },
+                verPropietario(){
+                   
+                    var idquipo = this.selected[0].id;
+                    let tamanio= this.selected.length;
+                   if(tamanio>0){
+                       
+                       this.dialog_modal = true;
+
+                    }           
+                    else{
+                        alert("¡Porfavor seleccione un equipo!");
+                    }  
                 },
                 guardar(){
 
@@ -588,6 +675,26 @@ import axios from 'axios';
                 },
            
              mounted(){
+
+               axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario")
+                    .then(response => {
+                        // Obtenemos los datos
+                        let respuesta = response.data;
+                        
+                        if(response.status == 200){
+                            
+                            
+                           this.items_propietario = respuesta;
+                           
+                           console.log(respuesta)
+                        }
+                    })
+                    .catch(e => {
+                        // Capturamos los errores
+                         console.log(e);
+                    })
+
+                        
                 axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
@@ -655,6 +762,7 @@ import axios from 'axios';
                         // Capturamos los errores
                          console.log(e);
                     })
+
              }
     }
 </script>
