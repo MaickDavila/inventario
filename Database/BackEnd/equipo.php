@@ -97,6 +97,32 @@ if($op != "0"){
             echo $jsonstring;
         break;
         
+        case 'showPropietario':
+            $consulta = "call MostrarUsuario_Equipo()";
+            $resultado = mysqli_query($conexion, $consulta);
+            
+            if(!$resultado){
+                die('Error de consulta '. mysqli_error($conexion));            
+            }
+    
+            $json = array();
+    
+            while($fila = mysqli_fetch_array($resultado)){
+                $json[] = array(
+                    'id'=> $fila['id'],                    
+                    'area'=> $fila['area'],
+                    'usuario'=> $fila['usuario'],
+                    'nombre_equipo'=> $fila['nombre_equipo'],
+                    'estado'=> $fila['estado'],
+                    'id_equipo'=> $fila['id_equipo']
+                );
+            }
+    
+            $jsonstring = json_encode($json);
+    
+            echo $jsonstring;
+            
+        break;
         default:
             # code...
             echo "1";

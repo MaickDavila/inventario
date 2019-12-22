@@ -259,7 +259,7 @@
                                       <!-- <template v-slot:activator="{ on }"> -->
                                         <!-- <v-btn color="primary" dark v-on="on">Ver Propietario</v-btn> -->
                                     <!-- </template> -->
-                                     <v-btn class="ma-2" tile color="primary" dark @click="mostarHistorial">Ver Propietario</v-btn>  
+                                     <v-btn class="ma-2" tile color="primary" dark @click="verPropietario">Ver Propietario</v-btn>  
                                     <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
                                     <v-btn class="ma-2" tile outlined color="success" @click="editarEvento">
                                     <v-icon left>mdi-pencil</v-icon> Editar
@@ -409,10 +409,7 @@ import axios from 'axios';
                     var newItems =  this.items_propietario.filter(
                         items=>items.id_equipo === id
                     )
-                    
-                    this.items_propietario = newItems;
-
-                    
+                    this.items_propietario = newItems;    
                 },
                 LlenarTipos(){
                         axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
@@ -479,6 +476,22 @@ import axios from 'axios';
                    if(tamanio>0){
                        
                        this.dialog_modal = true;
+                        axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario")
+                    .then(response => {
+                        // Obtenemos los datos
+                        let respuesta = response.data;
+                        
+                        if(response.status == 200){
+                            
+                            
+                           this.items_propietario = respuesta;
+                        
+                        }
+                    })
+                    .catch(e => {
+                        // Capturamos los errores
+                         console.log(e);
+                    })
 
                     }           
                     else{
@@ -676,23 +689,7 @@ import axios from 'axios';
            
              mounted(){
 
-               axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario")
-                    .then(response => {
-                        // Obtenemos los datos
-                        let respuesta = response.data;
-                        
-                        if(response.status == 200){
-                            
-                            
-                           this.items_propietario = respuesta;
-                           
-                           console.log(respuesta)
-                        }
-                    })
-                    .catch(e => {
-                        // Capturamos los errores
-                         console.log(e);
-                    })
+              
 
                         
                 axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=show")
