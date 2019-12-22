@@ -193,52 +193,94 @@
 
         </div>  
 
-               
-      <template>
-  <v-row justify="center">
-    <v-dialog v-model="dialog_modal" fullscreen hide-overlay transition="dialog-bottom-transition">
-    
-      <v-card>
-        <v-toolbar dark color="primary">
-          <v-btn icon dark @click="dialog_modal = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Datos Propietario</v-toolbar-title>
-          <v-spacer></v-spacer>
-          
-        </v-toolbar>
-        <v-list three-line subheader>
-          <v-subheader></v-subheader>
-          
-          <v-list-item>
-            <v-list-item-content v-for="(row,index) in items_propietario" :key="index">
-              <v-list-item-title v-if="row.estado == 1">Nombre : {{row.usuario}}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+        <!--dialogo de propiertario-->   
+        <template>
+            <v-row justify="center">
+                <v-dialog v-model="dialog_modal" fullscreen hide-overlay transition="dialog-bottom-transition">
+                
+                <v-card>
+                    <v-toolbar dark color="primary">
+                    <v-btn icon dark @click="dialog_modal = false">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Datos Propietario</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    
+                    </v-toolbar>
+                    <v-list three-line subheader>
+                    <v-subheader></v-subheader>
+
+                    <div class="text-center">
+                        <v-btn class="ma-2" tile color="success" dark @click="AgregarPropietarioEvento">Agregar Propietario</v-btn>                                                 
+                    </div>
 
 
-                   <v-data-table
-                        v-model="selected"
-                        :headers="headers2"
-                        :items="items_propietario"
-                        :single-select="singleSelect"
-                        :search="search"
-                        item-key="id"
-                        show-select
-                        class="elevation-1"
-                        disable-sort
-                        >
-                  
-                    </v-data-table>
-                     
-  
-        </v-list>
-      
-      </v-card>
-    </v-dialog>
-  </v-row>
-</template>
+                            <v-data-table
+                                    v-model="selected"
+                                    :headers="headers2"
+                                    :items="items_propietario"
+                                    :single-select="singleSelect"
+                                    :search="search"
+                                    item-key="id"
+                                    show-select
+                                    class="elevation-1"
+                                    disable-sort
+                                    >
+                            
+                            </v-data-table>
+                                
+            
+                    </v-list>
+                
+                </v-card>
+                </v-dialog>
+            </v-row>
+        </template>
+        <!--fin dialogo de propiertario--> 
 
+
+        <!--modal para agregar un propietario-->
+        <template>
+            <v-row justify="center">
+                <v-dialog v-model="dialogAgregarPropietario" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                    <span class="headline">Agregar Propietario</span>
+                    </v-card-title>
+                    <v-card-text>
+                    <v-container>
+                        <v-row>
+                            <v-col cols="12" sm="12">
+                                <v-select
+                                    v-model="select_usuarios"
+                                    :hint="`${select_usuarios.state}, ${select_usuarios.abbr}`"
+                                    :items="items_usuarios"
+                                    item-text="state"
+                                    item-value="abbr"
+                                    label="Usuarios"
+                                    persistent-hint
+                                    return-object
+                                    single-line
+                                    
+                                ></v-select>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                    
+                    </v-card-text>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="dialogAgregarPropietario = false">Cerrar</v-btn>
+                    <v-btn color="blue darken-1" text @click="dialogAgregarPropietario = false">Guardar</v-btn>
+                    </v-card-actions>
+                </v-card>
+                </v-dialog>
+            </v-row>
+        </template>
+        <!--fin modal para agregar un propietario-->
+
+
+        <!--seccion del datatbale--> 
         <div class=" align-content-end flex-grow-1">
                     
                     <template>  
@@ -293,8 +335,11 @@
 
                         </v-card>
                     </template>
-        </div>      
+        </div>     
+        <!--fin seccion del datatbale--> 
+        
 
+        <!--dialogo de eliminar-->
         <div>
             <template>
                 <v-row justify="center">
@@ -313,7 +358,7 @@
                 </v-row>
             </template>
         </div>
-
+        <!--fin dialogo de eliminar-->
 
 
 
@@ -329,6 +374,9 @@ import axios from 'axios';
         name:'Equipo',
         data(){
             return{
+                select_usuarios:{},
+                items_usuarios:[],
+                dialogAgregarPropietario:false,
                 dialog_modal: false,
                 notifications: false,
                 sound: true,
@@ -368,11 +416,9 @@ import axios from 'axios';
                     text: 'Id',          
                     value: 'id',
                     },          
-                    { text: 'Area', value: 'area' },
-                    { text: 'Usuario', value: 'usuario' },
-                    { text: 'Nombre Equipo', value: 'nombre_equipo' },
-                    { text: 'Estado', value: 'estado' },
-                    { text: 'id_equipo', value: 'id_equipo'}
+                    { text: 'Propietario', value: 'propietario' },
+                    { text: 'Estado', value: 'estado'},
+                    { text: 'Idusuario', value: 'idusuario'}
                 ],
                 headers: [
 
@@ -405,6 +451,34 @@ import axios from 'axios';
                     }
             },
             methods:{
+                AgregarPropietarioEvento(){
+                    this.dialogAgregarPropietario = true;
+
+                    axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=show")
+                    .then(response => {
+                        // Obtenemos los datos
+                        let respuesta = response.data;
+                        let json = [];
+                        if(response.status == 200){
+                        respuesta.forEach(element=>{
+                            json.push(
+                                {
+                                    "state":element.nombres,
+                                    "abbr": element.idusuario
+                                }
+                            );
+                        })
+                       
+                        this.items_usuarios = json;
+                        
+                        
+                        }
+                    })
+                    .catch(e => {
+                        // Capturamos los errores
+                        console.log(e);
+                    })                                                                                                                                            
+                },                 
                 mostarHistorial(id){
                     var newItems =  this.items_propietario.filter(
                         items=>items.id_equipo === id
@@ -471,12 +545,13 @@ import axios from 'axios';
                 },
                 verPropietario(){
                    
-                    var idquipo = this.selected[0].id;
-                    let tamanio= this.selected.length;
+            
+                var idequipo = this.selected[0].id;
+                let tamanio= this.selected.length;
                    if(tamanio>0){
                        
-                       this.dialog_modal = true;
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario")
+                    this.dialog_modal = true;
+                    axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario&idequipo="+idequipo)
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
