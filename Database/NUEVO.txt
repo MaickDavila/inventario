@@ -1,0 +1,11 @@
+create procedure MostrarPropietario(_idequipo int)
+select
+CONCAT(u.nombres, " ", u.apellidos) as 'Propietario',
+case ue.estado 
+when 0 then "Inactivo"
+when 1 then "Activo"
+end as "Estado"
+from usuario_equipo ue
+inner join equipo e on ue.idequipo = e.idequipo
+inner join usuario u on ue.idusuario = u.idusuario
+where ue.idequipo = _idequipo
