@@ -2,7 +2,7 @@
 require("conexion.php");
 
 $id = isset($_GET["id"])?$_GET["id"]:"";
-$idequipo = isset($_GET["idequipo"])?$_GET["idequipo"]:"";
+ 
  
 $idmarca = isset($_GET["idmarca"])?$_GET["idmarca"]:"";
 $idtipo_equipo = isset($_GET["idtipo_equipo"])?$_GET["idtipo_equipo"]:"";
@@ -98,7 +98,7 @@ if($op != "0"){
         break;
         
         case 'showPropietario':
-            $consulta = "call MostrarPropietario($idequipo)";
+            $consulta = "call MostrarPropietario($id)";
             $resultado = mysqli_query($conexion, $consulta);
             
             if(!$resultado){
