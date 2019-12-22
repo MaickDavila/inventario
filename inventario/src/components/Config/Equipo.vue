@@ -222,9 +222,9 @@
   >
     <v-list-item three-line>
       <v-list-item-content>
-        <div  class="overline mb-4">Nombre</div>
+        <div  class="overline mb-4" v-if="items_propietario.length>0">Nombre</div>
         <v-list-item-title  class="headline mb-1">{{items_propietario[0].Propietario}}</v-list-item-title>
-        <v-list-item-subtitle>Este es el propietario actual</v-list-item-subtitle>
+        <v-list-item-subtitle>Este es el propietario</v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
 
