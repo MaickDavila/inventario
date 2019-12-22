@@ -2,7 +2,7 @@
 require("conexion.php");
 
 $id = isset($_GET["id"])?$_GET["id"]:"";
- 
+$idequipo = isset($_GET["idequipo"])?$_GET["idequipo"]:"";
  
 $idmarca = isset($_GET["idmarca"])?$_GET["idmarca"]:"";
 $idtipo_equipo = isset($_GET["idtipo_equipo"])?$_GET["idtipo_equipo"]:"";
@@ -98,7 +98,7 @@ if($op != "0"){
         break;
         
         case 'showPropietario':
-            $consulta = "call MostrarUsuario_Equipo()";
+            $consulta = "call MostrarPropietario($idequipo)";
             $resultado = mysqli_query($conexion, $consulta);
             
             if(!$resultado){
@@ -110,11 +110,9 @@ if($op != "0"){
             while($fila = mysqli_fetch_array($resultado)){
                 $json[] = array(
                     'id'=> $fila['id'],                    
-                    'area'=> $fila['area'],
-                    'usuario'=> $fila['usuario'],
-                    'nombre_equipo'=> $fila['nombre_equipo'],
-                    'estado'=> $fila['estado'],
-                    'id_equipo'=> $fila['id_equipo']
+                    'propietario'=> $fila['propietario'],                                        
+                    'estado'=> $fila['estado'],     
+                    'idusuario'=> $fila['idusuario']
                 );
             }
     
