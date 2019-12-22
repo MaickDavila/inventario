@@ -193,23 +193,70 @@
 
         </div>  
 
-        <!--dialogo de propiertario-->   
+               
         <template>
-            <v-row justify="center">
-                <v-dialog v-model="dialog_modal" fullscreen hide-overlay transition="dialog-bottom-transition">
-                
-                <v-card>
-                    <v-toolbar dark color="primary">
-                    <v-btn icon dark @click="dialog_modal = false">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                    <v-toolbar-title>Datos Propietario</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    
-                    </v-toolbar>
-                    <v-list three-line subheader>
-                    <v-subheader></v-subheader>
 
+                                <v-row justify="center">
+                                    <v-dialog v-model="dialog_modal" fullscreen hide-overlay transition="dialog-bottom-transition">
+                                    
+                                    <v-card>
+                                        <v-toolbar dark color="primary">
+                                        <v-btn icon dark @click="dialog_modal = false">
+                                            <v-icon>mdi-close</v-icon>
+                                        </v-btn>
+                                        <v-toolbar-title>Datos Propietario</v-toolbar-title>
+                                        <v-spacer></v-spacer>
+                                        
+                                        </v-toolbar>
+                                        <v-list three-line subheader>
+                                        <v-subheader></v-subheader>
+                                        
+                                        
+
+
+
+
+                                <v-card
+                                    class="mx-auto"
+                                    max-width="344"
+                                    outlined
+                                >
+                                    <v-list-item three-line>
+                                    <v-list-item-content>
+                                        <div  class="overline mb-4">Nombre</div>
+                                        <v-list-item-title  class="headline mb-1">{{items_propietario[0].Propietario}}</v-list-item-title>
+                                        <v-list-item-subtitle>Este es el propietario actual</v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    </v-list-item>
+
+                                </v-card>
+
+
+
+
+                                    <v-data-table
+                                            v-model="selected"
+                                            :headers="headers2"
+                                            :items="items_propietario"
+                                            :single-select="singleSelect"
+                                            :search="search"
+                                            item-key="id"
+                                            show-select
+                                            class="elevation-1"
+                                            disable-sort
+                                            >
+                                        </v-data-table>
+                                        
+                    
+                            </v-list>
+                        
+                        </v-card>
+                        </v-dialog>
+                    </v-row>
+        </template>
+
+                
+        <template>
                     <div class="text-center">
                         <v-btn class="ma-2" tile color="success" dark @click="AgregarPropietarioEvento">Agregar Propietario</v-btn>                                                 
                     </div>
@@ -281,60 +328,59 @@
 
 
         <!--seccion del datatbale--> 
-        <div class=" align-content-end flex-grow-1">
-                    
-                    <template>  
-                        <v-card>
+        <div class=" align-content-end flex-grow-1">                    
+            <template>  
+                <v-card>
 
-                            <v-card-title>                    
-                                <v-text-field
-                                    v-model="search"                        
-                                    label="Buscar"
-                                    single-line 
-                                    class=""                       
-                                >                       
-                                </v-text-field>
+                    <v-card-title>                    
+                        <v-text-field
+                            v-model="search"                        
+                            label="Buscar"
+                            single-line 
+                            class=""                       
+                        >                       
+                        </v-text-field>
 
-                                <v-spacer></v-spacer>
+                        <v-spacer></v-spacer>
 
-                                <div class="text-center">
-                                      <!-- <template v-slot:activator="{ on }"> -->
-                                        <!-- <v-btn color="primary" dark v-on="on">Ver Propietario</v-btn> -->
-                                    <!-- </template> -->
-                                     <v-btn class="ma-2" tile color="primary" dark @click="verPropietario">Ver Propietario</v-btn>  
-                                    <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
-                                    <v-btn class="ma-2" tile outlined color="success" @click="editarEvento">
-                                    <v-icon left>mdi-pencil</v-icon> Editar
-                                    </v-btn>
-                                    <v-btn class="ma-2" tile color="error" dark @click="EventoBorrar(false)">Borar</v-btn>
-                                    
-                                    
-                                </div>
+                        <div class="text-center">
+                                <!-- <template v-slot:activator="{ on }"> -->
+                                <!-- <v-btn color="primary" dark v-on="on">Ver Propietario</v-btn> -->
+                            <!-- </template> -->
+                                <v-btn class="ma-2" tile color="primary" dark @click="verPropietario">Ver Propietario</v-btn>  
+                            <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
+                            <v-btn class="ma-2" tile outlined color="success" @click="editarEvento">
+                            <v-icon left>mdi-pencil</v-icon> Editar
+                            </v-btn>
+                            <v-btn class="ma-2" tile color="error" dark @click="EventoBorrar(false)">Borar</v-btn>
+                            
+                            
+                        </div>
 
-                            </v-card-title>
+                    </v-card-title>
 
-                                
-                                
-                            <template>
-                            <v-data-table
-                            v-model="selected"
-                            :headers="headers"
-                            :items="items"
-                            :single-select="singleSelect"
-                            :search="search"
-                            item-key="id"
-                            show-select
-                            class="elevation-1"
-                            disable-sort
-                            >
-                            <template v-slot:top>
-                                <v-switch v-model="singleSelect" label="Seleccion simple" class="pa-3"></v-switch>
-                            </template>
-                            </v-data-table>
-                        </template>
-
-                        </v-card>
+                        
+                        
+                    <template>
+                    <v-data-table
+                    v-model="selected"
+                    :headers="headers"
+                    :items="items"
+                    :single-select="singleSelect"
+                    :search="search"
+                    item-key="id"
+                    show-select
+                    class="elevation-1"
+                    disable-sort
+                    >
+                    <template v-slot:top>
+                        <v-switch v-model="singleSelect" label="Seleccion simple" class="pa-3"></v-switch>
                     </template>
+                    </v-data-table>
+                </template>
+
+                </v-card>
+            </template>
         </div>     
         <!--fin seccion del datatbale--> 
         
@@ -359,11 +405,6 @@
             </template>
         </div>
         <!--fin dialogo de eliminar-->
-
-
-
-
-       
 
     </div>
 </template>
@@ -416,9 +457,9 @@ import axios from 'axios';
                     text: 'Id',          
                     value: 'id',
                     },          
-                    { text: 'Propietario', value: 'propietario' },
-                    { text: 'Estado', value: 'estado'},
-                    { text: 'Idusuario', value: 'idusuario'}
+                    { text: 'Propietario', value: 'Propietario' },
+                    { text: 'Estado', value: 'Estado' },
+                    { text: 'idusuario', value: 'idusuario' }
                 ],
                 headers: [
 
@@ -451,40 +492,6 @@ import axios from 'axios';
                     }
             },
             methods:{
-                AgregarPropietarioEvento(){
-                    this.dialogAgregarPropietario = true;
-
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=show")
-                    .then(response => {
-                        // Obtenemos los datos
-                        let respuesta = response.data;
-                        let json = [];
-                        if(response.status == 200){
-                        respuesta.forEach(element=>{
-                            json.push(
-                                {
-                                    "state":element.nombres,
-                                    "abbr": element.idusuario
-                                }
-                            );
-                        })
-                       
-                        this.items_usuarios = json;
-                        
-                        
-                        }
-                    })
-                    .catch(e => {
-                        // Capturamos los errores
-                        console.log(e);
-                    })                                                                                                                                            
-                },                 
-                mostarHistorial(id){
-                    var newItems =  this.items_propietario.filter(
-                        items=>items.id_equipo === id
-                    )
-                    this.items_propietario = newItems;    
-                },
                 LlenarTipos(){
                         axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                         .then(response => {
@@ -544,22 +551,22 @@ import axios from 'axios';
                    else this.mostrar_agregar = true;
                 },
                 verPropietario(){
-                   
-            
-                var idequipo = this.selected[0].id;
-                let tamanio= this.selected.length;
+                  
+                    var idquipo = this.selected[0].id;
+                    
+                    let tamanio= this.selected.length;
                    if(tamanio>0){
                        
-                    this.dialog_modal = true;
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario&idequipo="+idequipo)
-                    .then(response => {
-                        // Obtenemos los datos
+                       this.dialog_modal = true;
+                        axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario&id="+idquipo)
+                        .then(response => {
+                        console.log(response);
                         let respuesta = response.data;
-                        
                         if(response.status == 200){
                             
                             
                            this.items_propietario = respuesta;
+                           
                         
                         }
                     })
