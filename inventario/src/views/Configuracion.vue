@@ -42,7 +42,6 @@
                     Impresoras
                 </v-tab>
 
-                
 
                 <v-tab-item>
                     <v-card flat>
@@ -101,7 +100,6 @@ import Tipo_Usuario from '@/components/Config/Tipo_Usuario.vue'
 import Usuario from '@/components/Config/Usuario.vue'
 import Equipo from '@/components/Config/Equipo.vue'
 import Impresoras from '@/components/Config/Impresoras.vue'
-
 
     export default {
         name:'Configuracion',
