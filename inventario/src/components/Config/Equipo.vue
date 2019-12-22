@@ -210,11 +210,27 @@
         <v-list three-line subheader>
           <v-subheader></v-subheader>
           
-          <v-list-item>
-            <v-list-item-content v-for="(row,index) in items_propietario" :key="index">
-              <v-list-item-title v-if="row.estado == 1">Nombre : {{row.usuario}}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          
+
+
+
+
+  <v-card
+    class="mx-auto"
+    max-width="344"
+    outlined
+  >
+    <v-list-item three-line>
+      <v-list-item-content>
+        <div  class="overline mb-4">Nombre</div>
+        <v-list-item-title  class="headline mb-1">{{items_propietario[0].Propietario}}</v-list-item-title>
+        <v-list-item-subtitle>Este es el propietario actual</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+
+  </v-card>
+
+
 
 
                    <v-data-table
@@ -228,7 +244,6 @@
                         class="elevation-1"
                         disable-sort
                         >
-                  
                     </v-data-table>
                      
   
@@ -368,11 +383,9 @@ import axios from 'axios';
                     text: 'Id',          
                     value: 'id',
                     },          
-                    { text: 'Area', value: 'area' },
-                    { text: 'Usuario', value: 'usuario' },
-                    { text: 'Nombre Equipo', value: 'nombre_equipo' },
-                    { text: 'Estado', value: 'estado' },
-                    { text: 'id_equipo', value: 'id_equipo'}
+                    { text: 'Propietario', value: 'Propietario' },
+                    { text: 'Estado', value: 'Estado' },
+                    { text: 'idusuario', value: 'idusuario' }
                 ],
                 headers: [
 
@@ -405,12 +418,6 @@ import axios from 'axios';
                     }
             },
             methods:{
-                mostarHistorial(id){
-                    var newItems =  this.items_propietario.filter(
-                        items=>items.id_equipo === id
-                    )
-                    this.items_propietario = newItems;    
-                },
                 LlenarTipos(){
                         axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                         .then(response => {
@@ -470,21 +477,22 @@ import axios from 'axios';
                    else this.mostrar_agregar = true;
                 },
                 verPropietario(){
-                   
+                  
                     var idquipo = this.selected[0].id;
+                    
                     let tamanio= this.selected.length;
                    if(tamanio>0){
                        
                        this.dialog_modal = true;
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario")
-                    .then(response => {
-                        // Obtenemos los datos
+                        axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario&id="+idquipo)
+                        .then(response => {
+                        console.log(response);
                         let respuesta = response.data;
-                        
                         if(response.status == 200){
                             
                             
                            this.items_propietario = respuesta;
+                           
                         
                         }
                     })
