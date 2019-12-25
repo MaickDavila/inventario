@@ -73,6 +73,7 @@ export default {
 
     methods: {
       validate () {
+        console.log("esta validando el login")
         if (this.$refs.form.validate()) {
            
            axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=login&usuario="+this.name)
@@ -82,11 +83,11 @@ export default {
                         
                         if(response.status == 200){
                             this.items = respuesta;  
-                            console.log(this.items);                  
+                                      
                             localStorage.setItem('login', JSON.stringify(this.items));      
 
                             this.$store.dispatch('AddLogin', this.items)
-                            this.$router.push('/home');
+                    
                             this.logueado = true;
                            
                         }
@@ -110,6 +111,13 @@ export default {
         this.items = JSON.parse(localStorage.getItem('login')); 
         if(this.items.length>0){
           this.logueado = true;
+             
+          // if(this.items[0].tipo_usuario.lowercase != 'admin'){
+          //       this.$router.push('/Privatechat');
+          // }else{
+          //       this.$router.push('/chat');
+          // }
+                         
         }
       }
       

@@ -86,15 +86,18 @@ if($op != "0"){
     
             while($fila = mysqli_fetch_array($resultado)){
                 $json[] = array(
-                    'idusuario'=> $fila['idusuario'],
+                    'idusuario_equipo'=> $fila['idusuario_equipo'],
                     'tipo_usuario'=> $fila['tipo_usuario'],
-                    'nombres'=> $fila['nombres'],
-                    'apellidos'=> $fila['apellidos'],
+                    'area'=> $fila['area'],
+                    'nombre_usuario'=> $fila['nombre_usuario'],
+                    'usuario_equipo'=> $fila['usuario_equipo'],
                     'celular'=> $fila['celular'],
                     'correo'=> $fila['correo'],
-                    'fecha'=> $fila['fecha'],
-                    'estado'=> $fila['estado'],
-                    'idtipousuario'=> $fila['idtipousuario'],                
+                    'fecha'=> $fila['fecha'],                    
+                    'idtipo_usuario'=> $fila['idtipo_usuario'],                
+                    'idusuario'=> $fila['idusuario'],
+                    'idequipo'=> $fila['idequipo'],
+                    'idarea'=> $fila['idarea'],
                 );
             }
     

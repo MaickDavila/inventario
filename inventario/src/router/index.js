@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Configuracion from '../views/Configuracion.vue'
 import Chat from '../views/Chat.vue'
+import privateChat   from '../views/Privatechat.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes = [
     name: 'chat',
     component: Chat
   },
+  {
+    path:'/privateChat' ,
+    name : 'privatechat',
+    component : privateChat
+  }
 ]
 
 const router = new VueRouter({
