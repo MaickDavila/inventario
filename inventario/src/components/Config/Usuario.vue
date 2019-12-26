@@ -101,9 +101,9 @@
                                 <v-spacer></v-spacer>
 
                                 <div class="text-center">
-                                     
+                                    <v-btn class="ma-2" tile color="primary" dark @click="verEquipos()">Ver Equipo</v-btn>  
                                     <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
-                                    <v-btn class="ma-2" tile outlined color="success" @click="editarEvento">
+                                    <v-btn class="ma-2" tile outlined color="success" @click="editarEvento()">
                                     <v-icon left>mdi-pencil</v-icon> Editar
                                     </v-btn>
                                     <v-btn class="ma-2" tile color="error" dark @click="EventoBorrar(false)">Borar</v-btn>
@@ -155,6 +155,67 @@
                 </v-row>
             </template>
         </div>
+
+
+
+
+
+
+         <!--datos propietario-->               
+        <template>
+            <v-row justify="center">
+                <v-dialog v-model="dialog_modal" fullscreen hide-overlay transition="dialog-bottom-transition">
+                
+                <v-card>
+                    <v-toolbar dark color="primary">
+                    <v-btn icon dark @click="dialog_modal = false">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Datos Equipo</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    
+                    </v-toolbar>
+                    <v-list three-line subheader>
+                    <v-subheader></v-subheader>
+                    
+
+                    <v-card-title>    
+                        <v-text-field
+                            v-model="search"                        
+                            label="Buscar"
+                            single-line 
+                            class=""                       
+                        >                       
+                        </v-text-field>
+                    </v-card-title>    
+
+                    <v-spacer></v-spacer>
+                    
+                    <v-data-table
+                            v-model="selected2"
+                            :headers="headers2"
+                            :items="items_propietario"
+                            :single-select="singleSelect"
+                            :search="search"
+                            item-key="id"
+                            show-select
+                            class="elevation-1"
+                            disable-sort
+                            >
+                        </v-data-table>
+                                
+            
+                    </v-list>
+                
+                </v-card>
+                </v-dialog>
+            </v-row>
+        </template>
+        <!--fin datos propietario-->              
+
+              
+
+
     </div>
 </template>
 
@@ -163,8 +224,10 @@ import axios from 'axios';
     export default {
         name:'Usuario',
         data(){
-            return{
-                select: { state: '', abbr: '' },
+            return{  
+                dialog_modal:false,
+
+                select: { 'state': '', 'abbr': '' },
                 items_tipos: [],
                 mostrar_agregar:false,                
                 dialog: false,
@@ -198,8 +261,10 @@ import axios from 'axios';
                 items:[], 
                     }
             },
-            methods:{      
-      
+            methods:{     
+                verEquipos(){
+                    this.dialog_modal = true;
+                },
                 agregarEvento(){
                    if(this.mostrar_agregar == true){
                        this.mostrar_agregar = false;
@@ -301,7 +366,7 @@ import axios from 'axios';
 
                 },
                 editarEvento(){
-                    let tamanio= this.selected.length;                                        
+                    let tamanio = this.selected.length;                                        
                     if(tamanio>0){
                         this.idusuario =  this.selected[0].idusuario;                       
                         this.nombres = this.selected[0].nombres; 
@@ -311,7 +376,9 @@ import axios from 'axios';
                         let idtipo_usuario = this.selected[0].idtipousuario; 
                         //
                         this.select = this.items_tipos.filter(valor => valor.abbr == idtipo_usuario)[0];
-                        
+                        console.log("aqui estoy testeando");
+                        console.log(this.items_tipos);
+
                       
                         //
                         this.texto_guardar = "Guardar Edición";

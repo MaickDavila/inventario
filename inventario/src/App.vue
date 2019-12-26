@@ -50,6 +50,7 @@ import axios from 'axios';
 import HelloWorld from './components/HelloWorld';
 import Menu from './components/Menu';
 
+
 export default {
   name: 'App',
 
@@ -80,16 +81,34 @@ export default {
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
-                        
-                        if(response.status == 200){
+                       
+                        if(respuesta.length > 0){
                             this.items = respuesta;  
+                            console.log(this.items);
+                            console.log("son los items =!!!!");
+                            
                                       
                             localStorage.setItem('login', JSON.stringify(this.items));      
 
                             this.$store.dispatch('AddLogin', this.items)
                     
                             this.logueado = true;
+
+                            this.items.forEach(element => {
+                              let tipo = element.tipo_usuario;
+                              if(tipo.toUpperCase() == "ADMIN"){
+                                this.$router.push('/privateChat')                                
+                              }       
+                              else{
+                                 this.$router.push('/chat')
+                              }                       
+                            });
+                            
+
                            
+                        }
+                        else{
+                          alert("¡Compruebe su nombre de usuario!");
                         }
                     })
                     .catch(e => {
@@ -108,7 +127,10 @@ export default {
     mounted(){
       
       if (localStorage.getItem ('login')){
+        
         this.items = JSON.parse(localStorage.getItem('login')); 
+        this.$store.state.login = this.items;
+       
         if(this.items.length>0){
           this.logueado = true;
              

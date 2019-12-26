@@ -193,66 +193,150 @@
 
         </div>  
 
-               
-      <template>
-  <v-row justify="center">
-    <v-dialog v-model="dialog_modal" fullscreen hide-overlay transition="dialog-bottom-transition">
-    
-      <v-card>
-        <v-toolbar dark color="primary">
-          <v-btn icon dark @click="dialog_modal = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Datos Propietario</v-toolbar-title>
-          <v-spacer></v-spacer>
-          
-        </v-toolbar>
-        <v-list three-line subheader>
-          <v-subheader></v-subheader>
-          
-          
+        <!--datos propietario-->               
+        <template>
+            <v-row justify="center">
+                <v-dialog v-model="dialog_modal" fullscreen hide-overlay transition="dialog-bottom-transition">
+                
+                <v-card>
+                    <v-toolbar dark color="primary">
+                    <v-btn icon dark @click="dialog_modal = false">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Datos Propietario</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    
+                    </v-toolbar>
+                    <v-list three-line subheader>
+                    <v-subheader></v-subheader>
+                    
+                    
 
 
 
 
-  <v-card
-    class="mx-auto"
-    max-width="344"
-    outlined
-  >
-    <v-list-item three-line v-if="(items_propietario.length > 0)">
-      <v-list-item-content>          
-        <div  class="overline mb-4">Nombre</div>
-        <v-list-item-title  class="headline mb-1">{{items_propietario[0].propietario}}</v-list-item-title>
-        <v-list-item-subtitle>Este es el propietario</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
-
-  </v-card>
-
+            <v-card
+                class="mx-auto"
+                max-width="344"
+                outlined
+            >
+                <v-list-item three-line v-if="(items_propietario.length > 0)">
+                <v-list-item-content>          
+                    <div  class="overline mb-4">Nombre</div>
+                    <v-list-item-title  class="headline mb-1">{{items_propietario[0].propietario}}</v-list-item-title>
+                    <v-list-item-subtitle>{{items_propietario[0].area}}</v-list-item-subtitle>
+                </v-list-item-content>
+                </v-list-item>                
+            </v-card>
 
 
+            <!--nuevo propietario-->
+            <div class="d-flex flex-column align-self-center text-center mt-5 mb-5">
+                <div>
+                    <v-btn
+                    color="success"
+                    class="mr-4"
+                    @click="InsertarPropietarioEvent()"
+                    >
+                    Nuevo
+                    </v-btn>
 
-                   <v-data-table
-                        v-model="selected"
-                        :headers="headers2"
-                        :items="items_propietario"
-                        :single-select="singleSelect"
-                        :search="search"
-                        item-key="id"
-                        show-select
-                        class="elevation-1"
-                        disable-sort
-                        >
-                    </v-data-table>
-                     
-  
-        </v-list>
-      
-      </v-card>
-    </v-dialog>
-  </v-row>
-</template>
+                    <v-btn class="ma-2" tile outlined color="success" @click="cambiarPropietario()">
+                        Cambiar
+                    </v-btn>
+                </div>
+
+            
+                <template>
+                    <v-row justify="center">
+                        <v-dialog v-model="modal_add_propietario" persistent max-width="600px">
+
+                 <v-card>
+                            <v-card-title>
+                            <span class="headline">Nuevo Propietario</span>
+                            </v-card-title>
+                            <v-card-text>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="6">
+                                        <v-select
+                                        v-model="select_area"
+                                        :hint="`${select_area.state}, ${select_area.abbr}`"
+                                        :items="items_area"
+                                        item-text="state"
+                                        item-value="abbr"
+                                        label="Area"
+                                        persistent-hint
+                                        return-object
+                                        single-line
+                                        
+                                        ></v-select>
+                                    </v-col>    
+
+                                    <v-col cols="6">
+                                        <v-select
+                                        v-model="select_usuario"
+                                        :hint="`${select_usuario.state}, ${select_usuario.abbr}`"
+                                        :items="items_usuario"
+                                        item-text="state"
+                                        item-value="abbr"
+                                        label="Usuario"
+                                        persistent-hint
+                                        return-object
+                                        single-line
+                                        
+                                        ></v-select>
+                                    </v-col>   
+
+                                </v-row>
+                            </v-container>                            
+                            </v-card-text>
+                            <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue darken-1" text @click="modal_add_propietario = false">Close</v-btn>
+                            <v-btn color="blue darken-1" text @click="insertarPropietario()">Save</v-btn>
+                            </v-card-actions>
+                </v-card>
+                        </v-dialog>
+                    </v-row>
+                </template>
+                
+            </div>
+            <!--fin nuevo propietario-->
+
+             <v-card-title>    
+            <v-text-field
+                v-model="search"                        
+                label="Buscar"
+                single-line 
+                class=""                       
+            >                       
+            </v-text-field>
+            </v-card-title>    
+
+            <v-spacer></v-spacer>
+            
+            <v-data-table
+                    v-model="selected2"
+                    :headers="headers2"
+                    :items="items_propietario"
+                    :single-select="singleSelect"
+                    :search="search"
+                    item-key="id"
+                    show-select
+                    class="elevation-1"
+                    disable-sort
+                    >
+                </v-data-table>
+                                
+            
+                    </v-list>
+                
+                </v-card>
+                </v-dialog>
+            </v-row>
+        </template>
+        <!--fin datos propietario-->               
 
         <div class=" align-content-end flex-grow-1">
                     
@@ -274,7 +358,7 @@
                                       <!-- <template v-slot:activator="{ on }"> -->
                                         <!-- <v-btn color="primary" dark v-on="on">Ver Propietario</v-btn> -->
                                     <!-- </template> -->
-                                     <v-btn class="ma-2" tile color="primary" dark @click="verPropietario">Ver Propietario</v-btn>  
+                                    <v-btn class="ma-2" tile color="primary" dark @click="verPropietario">Ver Propietario</v-btn>  
                                     <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
                                     <v-btn class="ma-2" tile outlined color="success" @click="editarEvento">
                                     <v-icon left>mdi-pencil</v-icon> Editar
@@ -344,6 +428,11 @@ import axios from 'axios';
         name:'Equipo',
         data(){
             return{
+                select_area:{ state: '', abbr: '' },
+                items_area:[],
+                select_usuario:{ state: '', abbr: '' },
+                items_usuario:[],
+                modal_add_propietario:false,
                 dialog_modal: false,
                 notifications: false,
                 sound: true,
@@ -378,13 +467,17 @@ import axios from 'axios';
                 search: '',        
                 singleSelect:true,
                 selected: [],
+                selected2:[],
                 headers2 :[
                       {
                     text: 'Id',          
                     value: 'id',
                     },          
+                    { text: 'area', value: 'area' },                    
                     { text: 'Propietario', value: 'propietario' },
-                    { text: 'Estado', value: 'Estado' },
+                    { text: 'Fecha', value: 'fecha' },
+                    { text: 'Estado', value: 'estado' },
+                    { text: 'idarea', value: 'idarea' },
                     { text: 'idusuario', value: 'idusuario' }
                 ],
                 headers: [
@@ -418,6 +511,126 @@ import axios from 'axios';
                     }
             },
             methods:{
+                InsertarPropietarioEvent(){
+                    this.modal_add_propietario = true;
+                    
+                    axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=show")
+                        .then(response => {
+                            // Obtenemos los datos
+                            let respuesta = response.data;
+                            let json = [];
+                            if(response.status == 200){
+                            respuesta.forEach(element=>{
+                                let estado = element.estado;
+                                if(estado.toLowerCase() == "activo"){
+                                        
+                                    json.push(
+                                        {
+                                            "state":element.nombres + " " + element.apellidos,
+                                            "abbr": element.idusuario
+                                        }
+                                    );
+                                }                               
+                            })
+                            this.items_usuario = json;
+                            
+                            
+                            }
+                        })
+                        .catch(e => {
+                            // Capturamos los errores
+                            console.log(e);
+                        })
+
+
+                        axios.get("http://localhost:8080/inventario/Database/BackEnd/area.php?op=show")
+                        .then(response => {
+                            // Obtenemos los datos
+                            let respuesta = response.data;
+                            let json = [];
+                            if(response.status == 200){
+                            respuesta.forEach(element=>{
+                                let estado = element.estado;
+                                if(estado.toLowerCase() == "activo"){
+                                        
+                                    json.push(
+                                        {
+                                            "state":element.nombre,
+                                            "abbr": element.idarea
+                                        }
+                                    );
+                                }                               
+                            })
+                            this.items_area = json;
+                            
+                            
+                            }
+                        })
+                        .catch(e => {
+                            // Capturamos los errores
+                            console.log(e);
+                        })
+
+                },
+                cambiarPropietario(){
+                   
+                   if(this.selected2.length>0){
+                       let id = this.selected2[0].id;
+                       
+                       
+                           
+                                axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=CambiarPropietario&id="+id)
+                                        .then(response => {
+                                            // Obtenemos los datos
+                                            let respuesta = response.data;
+                                        
+                                            
+
+                                            if(response.status == 200){                                
+                                            
+                                                this.verPropietario();
+                                            
+                                            }
+                                        })
+                                        .catch(e => {
+                                            // Capturamos los errores
+                                            console.log(e);
+                                        })
+
+                        } 
+                    else{
+                        alert("Seleccione un usuario!");
+                    }
+
+                },
+                 insertarPropietario(){
+                   let idusuario = this.select_usuario.abbr;
+                   let idarea = this.select_area.abbr;
+                   
+                   let idequipo = this.selected[0].id;
+    
+                    this.selected.forEach(element => {                  
+                            axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=insertPropietario&idarea="+idarea+"&idusuario="+idusuario+"&id="+idequipo)
+                            .then(response => {
+                                // Obtenemos los datos
+                                let respuesta = response.data;
+                                
+
+
+                                if(response.status == 200){                                
+                                  
+                                    this.verPropietario();
+                                    this.modal_add_propietario = false;
+                                }
+                            })
+                            .catch(e => {
+                                // Capturamos los errores
+                            })
+                        
+                    });           
+
+                },
+
                 LlenarTipos(){
                         axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                         .then(response => {
@@ -474,7 +687,11 @@ import axios from 'axios';
                    if(this.mostrar_agregar == true){
                        this.mostrar_agregar = false;
                    }
-                   else this.mostrar_agregar = true;
+                   else{
+                        this.mostrar_agregar = true;                        
+                   }
+                   this.mostrarMarcas();
+                   this.mostrarTipos();
                 },
                 verPropietario(){
                   
@@ -486,15 +703,12 @@ import axios from 'axios';
                        this.dialog_modal = true;
                         axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario&id="+idquipo)
                         .then(response => {
-                        console.log("si esta entrando!=>");
-                        console.log(response);
+                         
                         let respuesta = response.data;
                         if(response.status == 200){
-                            
-                            
+   
                            this.items_propietario = respuesta;
-                           
-                        
+
                         }
                     })
                     .catch(e => {
@@ -694,8 +908,60 @@ import axios from 'axios';
                             console.log(e);
                         })
                 },
+                mostrarTipos(){
+                     axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
+                    .then(response => {
+                        // Obtenemos los datos
+                        let respuesta = response.data;
+                        
+                        if(response.status == 200){
+                       
+                            let json = [];
+                            respuesta.forEach(element=>{
+                            json.push(
+                                   {
+                                       "state":element.descripcion,
+                                       "abbr": element.idtipo_equipo
+                                   }
+                               );
+                           })
+                           this.items_tipo_equipo = json;
+                           
+                        }
+                    })
+                    .catch(e => {
+                        // Capturamos los errores
+                         console.log(e);
+                    })
                 },
-           
+                mostrarMarcas(){
+                                 axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=show")
+                    .then(response => {
+                        // Obtenemos los datos
+                        let respuesta = response.data;
+                        
+                        if(response.status == 200){
+                                let json = [];
+                               respuesta.forEach(element=>{
+                               json.push(
+                                   {
+                                       "state":element.nombre,
+                                       "abbr": element.idmarca
+                                   }
+                               );
+                           })
+                           this.items_marca = json;
+                        }
+                    })
+                    .catch(e => {
+                        // Capturamos los errores
+                         console.log(e);
+                    })
+                }
+                },
+            watch(){
+                this.mostrarMarcas()
+            }   ,        
              mounted(){
 
               
@@ -718,7 +984,7 @@ import axios from 'axios';
 
                     //marcas
                    
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=show")
+                    axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;

@@ -2,6 +2,11 @@
 require("conexion.php");
 
 $id = isset($_GET["id"]) ? $_GET["id"] : "";
+$idarea = isset($_GET["idarea"]) ? $_GET["idarea"] : "";
+$idusuario = isset($_GET["idusuario"]) ? $_GET["idusuario"] : "";
+
+
+
 
 
 $idmarca = isset($_GET["idmarca"]) ? $_GET["idmarca"] : "";
@@ -110,8 +115,11 @@ if ($op != "0") {
             while ($fila = mysqli_fetch_array($resultado)) {
                 $json[] = array(
                     'id'=> $fila['id'],                    
-                    'propietario'=> $fila['propietario'],                                        
+                    'area'=> $fila['area'],
+                    'propietario'=> $fila['propietario'],
+                    'fecha'=> $fila['fecha'],
                     'estado'=> $fila['estado'],     
+                    'idarea'=> $fila['idarea'],     
                     'idusuario'=> $fila['idusuario']
                 );
             }
@@ -121,6 +129,59 @@ if ($op != "0") {
             echo $jsonstring;
 
             break;
+
+        case 'insertPropietario':
+            $consulta = "call InsertarPropietario($idarea, $idusuario, $id)";
+            $resultado = mysqli_query($conexion, $consulta);
+            if ($resultado) echo "0";
+            else echo "1";
+            break;
+
+        case 'CambiarPropietario':
+            $consulta = "call CambiarPropietario($id)";
+            $resultado = mysqli_query($conexion, $consulta);
+            if ($resultado) echo "0";
+            else echo "1";
+            break;
+
+        case 'MostrarEquipoUsuario':
+            $consulta = "call MostrarEquipoUsuario($idusuario)";
+            $resultado = mysqli_query($conexion, $consulta);
+
+            if (!$resultado) {
+                die('Error de consulta ' . mysqli_error($conexion));
+            }
+
+            $json = array();
+
+            while ($fila = mysqli_fetch_array($resultado)) {
+                $json[] = array(
+                    'idusuario_equipo'=> $fila['idusuario_equipo'],                    
+                    'area'=> $fila['area'],
+                    'marca'=> $fila['marca'],
+                    'tipo'=> $fila['tipo'],
+                    'nombre_equipo'=> $fila['nombre_equipo'],     
+                    'usuario_equipo'=> $fila['usuario_equipo'],     
+                    'procesador'=> $fila['procesador'],
+                    'memoria_ram'=> $fila['memoria_ram'],
+                    'disco_duro'=> $fila['disco_duro'],
+                    'ip'=> $fila['ip'],
+                    'mascara_sub_red'=> $fila['mascara_sub_red'],
+                    'puerta_enlace'=> $fila['puerta_enlace'],
+                    'dns_preferido'=> $fila['dns_preferido'],
+                    'dns_alternativo'=> $fila['dns_alternativo'],
+                    'dominio'=> $fila['dominio'],
+                    'antivirus'=> $fila['antivirus'],
+                    'fecha'=> $fila['fecha'],
+                    'estado'=> $fila['estado']                    
+                );
+            }
+
+            $jsonstring = json_encode($json);
+
+            echo $jsonstring;
+            break;
+
         default:
             # code...
             echo "1";

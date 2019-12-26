@@ -9,9 +9,11 @@
             <div class="recent_heading">
               <h4>Recientes</h4>
             </div>
-            <div class="srch_bar">
+
+          <!--
+              <div class="srch_bar">
               <div class="stylish-input-group">
-                <input type="text" class="search-bar" placeholder="Search" />
+                <input type="text" class="search-bar" v-model="buscar" placeholder="Search" />
                 <span class="input-group-addon">
                   <button type="button">
                     <i class="fa fa-search" aria-hidden="true"></i>
@@ -19,9 +21,30 @@
                 </span>
               </div>
             </div>
+
+          -->
+
           </div>
+
+          <div class="my-2">
+              <v-btn
+              class="mr-2 warning"
+              @click="pendientes = true"
+              >
+                Pendientes
+              </v-btn>
+
+              <v-btn
+              class="success"
+              @click="pendientes = false"
+              >
+                Todos
+              </v-btn>
+
+            </div>
+
           <div class="inbox_chat">
-            <div class="chat_list active_chat" v-for="(index,i ) in messages" :key="i">
+            <div class="chat_list active_chat" v-for="(index,i ) in ListarMensajes()" :key="i">
               <div class="chat_people">
                 <div class="chat_img">
                   <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil" />
@@ -32,16 +55,15 @@
                     <span class="chat_date">{{index.data.fecha}}</span>
                   </h5>
                   <p>{{index.data.text}}</p>
-               
-                        <v-btn
-                          :color="{'warning':index.data.estado=1,'success':index.data.estado=0}"
-                          class="mr-4 chat_status"
+
+                        <v-btn                         
+                          :class="'mr-4 chat_status ' + colors[index.data.estado]"
                           @click="chageEstatus(index.data.id,index.data.estado)"
                         >
-                         {{index.data.estado}}
+                         {{estados[index.data.estado]}}
                         </v-btn>
+                   <p><small style="color:blue;">{{index.data.mensaje_soporte}}</small></p>
 
-                 
                 </div>
               </div>
             </div>
@@ -50,20 +72,71 @@
      <notifications group="foo" />
       </div>
     </div>
+
+            <template>
+              <v-row justify="center">
+                <v-dialog v-model="dialog" persistent max-width="600px">
+ 
+                  <v-card>
+                    <v-card-title>
+                      <span class="headline">Cambiar Estado</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-row>
+                          <v-col cols="12">
+                              <v-textarea
+                                v-model="descripcion"
+                                color="teal"
+                                :readonly="readOnly"
+                              >
+                                <template v-slot:label>
+                                  <div>
+                                    Descripción
+                                  </div>
+                                </template>
+                              </v-textarea>
+                            </v-col>                
+                        </v-row>
+                      </v-container>
+                      <small>*Agregue una descripción</small>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="dialog = false">Cerrar</v-btn>
+                      <v-btn color="blue darken-1" text @click="GuardarCambioSoporte()">Guardar</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-row>
+            </template>
+
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import io from 'socket.io-client';
+import Solucion from '@/components/Config/Solucion.vue';
+
 export default {
   data() {
     return {
+      idtemp:0,
+      readOnly:false,
+      descripcion:"",
+      dialog:false,
+      buscar:'',
+      pendientes:false,
       socket:{},
       message: null,
       messages: [],
       countMessages : 0,
       newCount : 0,
+      colors:{
+        '0':'warning',
+        '1':'success'
+      },
       estados : {
         '0' : 'pendiente',
         '1' : 'solucionado'
@@ -81,28 +154,75 @@ export default {
     this.newCount = 0;
   },
    mounted(){
-     
-    this.socket.on('chat',data=>{
-      this.messages = data;
-      this.countMessages = data.length;
-      this.newCount = data.length;
-    });
+    this.Escuchar();
     
   },
   methods: {
-    chageEstatus(id,status){
-      console.log("chage status succes" + id);
-      console.log("parameter" + status);
+ 
 
-      axios.get("http://localhost:8080/inventario/Database/BackEnd/chat.php?op=insertMesage&idsoporte="+id+"&idsoporte="+status)
+    Escuchar(){
+        this.socket.on('chat',data=>{
+        this.messages = data;
+        this.countMessages = data.length;
+        this.newCount = data.length;
+      });
+    },
+    ListarMensajes(){
+      let salida;
+
+      if(this.pendientes){
+          
+          salida = this.messages.filter(
+            function(element){
+              return element.data.estado == 0;
+            }
+          );
+        }  
+        else{
+          salida = this.messages;
+        }  
+       
+      
+      return salida;
+    },
+    getColor(value){
+      let salida = '';
+      if(value==1){
+        salida = 'success';
+      }else{
+        salida =  'danger';
+      }
+      console.log(salida);
+      return salida.toString();
+    },
+    chageEstatus(id,status){
+      var std = (status==1? 0:1)
+      this.dialog = true;
+      if(std == 1){
+        this.readOnly = false;
+        this.descripcion = "";
+        this.idtemp = id;
+      }
+      else{
+        this.readOnly = true;
+        let mensaje = this.messages.filter(element => element.data.id == id);        
+        this.descripcion = mensaje[0].data.mensaje_soporte;
+      }
+    },
+    GuardarCambioSoporte(){
+      console.log("this.descripcion");
+      console.log(this.descripcion);
+      axios.get("http://localhost:8080/inventario/Database/BackEnd/chat.php?op=insertMesage&idsoporte="+this.idtemp+"&estado="+1+"&mensaje="+this.descripcion)
           .then(response => {
               // Obtenemos los datos
-              socket.emit('chat',response.data);
+              console.log(response);              
+              this.dialog = false;   
+               
           })
           .catch(e => {
               // Capturamos los errores
         });
-      
+
     },
     saveMessage() {
       //   this.messages.push(this.message);
@@ -122,7 +242,7 @@ export default {
         });
       }
       });
-      this.init();
+      
     }
   }
 };
@@ -244,7 +364,7 @@ img {
 }
 
 .inbox_chat {
-  height: 550px;
+  height: 100vh;
   overflow-y: scroll;
 }
 

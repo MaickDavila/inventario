@@ -1,68 +1,12 @@
 <template>
     <div class="app">
-        <template>  
-            <v-card>
-                <div class="text-center display-3 pt-10">
-                    Lista de Activos
-                </div>
-                
-                <v-card-title>                    
-                    <v-text-field
-                        v-model="search"                        
-                        label="Buscar"
-                        single-line 
-                        class=""                       
-                    >                       
-                    </v-text-field>
-
-                    <v-spacer></v-spacer>
-
-                     <div class="text-center">
-                        <v-btn class="ma-2" tile color="indigo" dark @click="prueba">Historia</v-btn>
-
-                        <v-btn class="ma-2" tile outlined color="success">
-                        <v-icon left>mdi-pencil</v-icon> Editar
-                        </v-btn>
-
-                        
-                        
-                    </div>
-
-                </v-card-title>
-
-                    
-                    
-                <template>
-                <v-data-table
-                  v-model="selected"
-                  :headers="headers"
-                  :items="items"
-                  :single-select="singleSelect"
-                  :search="search"
-                  item-key="id"
-                  show-select
-                  class="elevation-1"
-                  disable-sort
-                >
-                  <template v-slot:top>
-                    <v-switch v-model="singleSelect" label="Seleccion simple" class="pa-3"></v-switch>
-                  </template>
-                </v-data-table>
-              </template>
-
-            </v-card>
-        </template>
-
-
-
-
-      
-
+       
     </div>
 </template>
 
 <script>
 import axios from 'axios';
+
 
   export default {
     data () {
@@ -101,39 +45,21 @@ import axios from 'axios';
       }
     },
     methods:{
-      prueba(){
-        console.log(this.selected);        
+      Asignar(){
+        let item =  JSON.parse(localStorage.getItem('login'));
+        this.$store.state.login = item;   
+        
+        let tipo = item[0].tipo_usuario;
+        if(tipo.toUpperCase() == "ADMIN"){
+          this.$router.push('/privateChat')                                
+        }       
+        else{
+            this.$router.push('/chat')
+        }
       },
-      Consultar(){
-        console.log("xxx");  
-        console.log("----");  
-        setTimeout(this.Consultar,1000);  
-        
-        axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario_equipo.php?op=show")
-        .then(response => {
-            // Obtenemos los datos
-            this.items = response.data
-            console.log(this.items);
-            console.log(this.desserts);
-        })
-        .catch(e => {
-            // Capturamos los errores
-        })
-        
-      }      
     },
     mounted(){
-      axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario_equipo.php?op=show")
-      .then(response => {
-          // Obtenemos los datos
-          this.items = response.data
-          console.log(this.items);
-          console.log(this.desserts);
-      })
-      .catch(e => {
-          // Capturamos los errores
-      })
-      
+      this.Asignar()
     }
 
 }

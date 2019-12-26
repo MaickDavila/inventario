@@ -16,14 +16,14 @@
         </div>
 
         <div style="flex-basis: 20%">
-          <v-toolbar style="background-color:#B5E742;">
+          <v-toolbar  style="background-color:#B5E742;">
 
             <v-btn text v-if="pequenio" style="color:#686868;" @click="IrHome()">DREL-UGEL</v-btn>
             
 
             <v-spacer></v-spacer>
 
-            <v-btn icon @click="IrAjustes()" style="color:#686868;">
+            <v-btn v-if="admin" icon @click="IrAjustes()" style="color:#686868;">
               <v-icon>fas fa-hammer</v-icon>
             </v-btn>
 
@@ -43,11 +43,22 @@
         data(){
             return{
                 pequenio:false,
+                admin:false
             }
         },     
         methods:{
             IrHome(){
-                this.$router.push('/home')
+                this.items = JSON.parse(localStorage.getItem('login')); 
+                var tipo = this.items[0].tipo_usuario;
+                
+                
+                if(tipo.toUpperCase() == "ADMIN"){
+                    this.$router.push('/privateChat')
+                }else{
+             
+                   this.$router.push('/chat')
+                }
+              
             },
             IrAjustes(){
                 this.$router.push('/configuracion')
@@ -58,10 +69,19 @@
                 {           
                     this.pequenio=true
                 }                 
+            },
+            Entorno(){
+              let tipo = this.$store.state.login[0].tipo_usuario.toUpperCase();
+              if(tipo == "ADMIN"){
+                this.admin = true;
+              }
             }
         },
         mounted(){
+            let item =  JSON.parse(localStorage.getItem('login'));
+            this.$store.state.login = item;   
             this.pantalla()
+            this.Entorno()
         }        
     }
 </script>

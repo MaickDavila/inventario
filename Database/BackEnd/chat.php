@@ -33,8 +33,9 @@ if ($op != "0") {
             else echo "1";
             break;
         case 'insertMesage':
-            $consulta = "call CambiarEstadoMesaje($idsoporte, $estado)";
+            $consulta = "call CambiarEstadoMesaje($idsoporte, $estado, '$mensaje')";
             $resultado = mysqli_query($conexion, $consulta);
+            
             if ($resultado) echo "0";
             else echo "1";
             break;
@@ -124,7 +125,8 @@ if ($op != "0") {
                         'text'=> $fila['mensaje'],
                         'fecha' => $fila["fecha"],
                         'id' => $fila["id_mesaje"],
-                        'estado' => $fila["estado"]
+                        'estado' => $fila["estado"],
+                        'mensaje_soporte' => $fila["mensaje_soporte"]
                     )
 
                 );
