@@ -7,6 +7,7 @@
                 <v-form
                     ref="form"                    
                     lazy-validation
+                    @submit.prevent="guardar()"
                 >
 
                     <v-container fluid>
@@ -89,26 +90,26 @@
                     <template>  
                         <v-card class="usuario">
 
-                            <v-card-title>                    
+                            <v-card-title class=" d-flex flex-row">                    
                                 <v-text-field
                                     v-model="search"                        
                                     label="Buscar"
                                     single-line 
-                                    class=""                       
+                                    class=" flex-grow-1"                                  
                                 >                       
                                 </v-text-field>
 
-                                <v-spacer></v-spacer>
+                                
 
-                                <div class="text-center">
-                                    <v-btn class="ma-2" tile color="primary" dark @click="verEquipos()">Ver Equipo</v-btn>  
-                                    <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
-                                    <v-btn class="ma-2" tile outlined color="success" @click="editarEvento()">
-                                    <v-icon left>mdi-pencil</v-icon> Editar
-                                    </v-btn>
-                                    <v-btn class="ma-2" tile color="error" dark @click="EventoBorrar(false)">Borar</v-btn>
-                                    
-                                    
+                                <div class="text-center flex-grow-1 ">
+                                    <div class=" align-self-end" style="float: right; !important;">
+                                        <v-btn class="ma-2" tile color="primary" dark @click="verEquipos()">Ver Equipo</v-btn>  
+                                        <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
+                                        <v-btn class="ma-2" tile outlined color="success" @click="editarEvento()">
+                                        <v-icon left>mdi-pencil</v-icon> Editar
+                                        </v-btn>
+                                        <v-btn class="ma-2" tile color="error" dark @click="EventoBorrar(false)">Borar</v-btn>
+                                    </div> 
                                 </div>
 
                             </v-card-title>
@@ -194,11 +195,9 @@
                     <v-data-table
                             v-model="selected2"
                             :headers="headers2"
-                            :items="items_propietario"
-                            :single-select="singleSelect"
+                            :items="items_propietario"                            
                             :search="search"
-                            item-key="id"
-                            show-select
+                            item-key="idusuario_equipo"
                             class="elevation-1"
                             disable-sort
                             >
@@ -220,14 +219,16 @@
 </template>
 
 <script>
+import functions from '@/assets/js/functions'
 import axios from 'axios';
     export default {
         name:'Usuario',
         data(){
             return{  
+                
                 dialog_modal:false,
-
-                select: { 'state': '', 'abbr': '' },
+                items_propietario:[],
+                select: { 'state': '', 'abbr': '' },                 
                 items_tipos: [],
                 mostrar_agregar:false,                
                 dialog: false,
@@ -242,6 +243,7 @@ import axios from 'axios';
                 search: '',        
                 singleSelect:true,
                 selected: [],
+                selected2:[],
                 headers: [
 
                 {
@@ -257,13 +259,52 @@ import axios from 'axios';
                 { text: 'Estado', value: 'estado' },
                 { text: 'Id Tipo Usuario', visible: "false", value: 'idtipousuario' }           
                 ],
-                
+                headers2:[
+
+                    {
+                        text: 'idusuario_equipo',          
+                        value: 'idusuario_equipo',
+                    },          
+                    { text: 'area', value: 'area' },
+                    { text: 'marca', value: 'marca' },
+                    { text: 'tipo', value: 'tipo' },
+                    { text: 'nombre_equipo', value: 'nombre_equipo' },
+                    { text: 'usuario_equipo', value: 'usuario_equipo' },
+                    { text: 'procesador', value: 'procesador' },
+                    { text: 'memoria_ram', value: 'memoria_ram' },
+                    { text: 'disco_duro', value: 'disco_duro' },
+                    { text: 'ip', value: 'ip' },
+                    { text: 'mascara_sub_red', value: 'mascara_sub_red' },
+                    { text: 'puerta_enlace', value: 'puerta_enlace' },
+                    { text: 'dns_preferido', value: 'dns_preferido' },
+                    { text: 'dns_alternativo', value: 'dns_alternativo' },
+                    { text: 'dominio', value: 'dominio' },
+                    { text: 'antivirus', value: 'antivirus' },
+                    { text: 'sistema_operativo', value: 'sistema_operativo' },
+                    { text: 'fecha', value: 'fecha' },
+                    { text: 'estado', value: 'estado' }  
+                ],
                 items:[], 
                     }
             },
             methods:{     
                 verEquipos(){
+                    this.items_propietario = [];
                     this.dialog_modal = true;
+                     let tamanio = this.selected.length;                                        
+                    if(tamanio>0){
+                        this.idusuario =  this.selected[0].idusuario;                       
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=MostrarEquipoUsuario&idusuario="+this.idusuario)
+                        .then(response => {
+                            this.items_propietario = response.data;                            
+                        })
+                        .catch(e => {
+                            // Capturamos los errores
+                    });
+                    }
+                    else{
+                        alert("¡Porfavor seleccione un usuario!");                        
+                    }
                 },
                 agregarEvento(){
                    if(this.mostrar_agregar == true){
@@ -273,6 +314,11 @@ import axios from 'axios';
                    this.limpiar();
                 },
                 guardar(){
+
+                   
+                    if(!confirm("¿Seguro que desea guardar?")){
+                        return;
+                    }
 
                     let nombres = this.nombres;
                     let apellidos = this.apellidos;
@@ -294,7 +340,7 @@ import axios from 'axios';
                         
                         if(!this.eseditar){
 
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=insert&"+"idtipo_usuario="+idtipo_usuario+"&nombres="+ nombres+"&apellidos="+apellidos+"&celular="+celular+"&correo="+correo)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/usuario.php?op=insert&"+"idtipo_usuario="+idtipo_usuario+"&nombres="+ nombres+"&apellidos="+apellidos+"&celular="+celular+"&correo="+correo)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -311,7 +357,7 @@ import axios from 'axios';
 
                             
                            
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=update&id="+id+"&idtipo_usuario="+idtipo_usuario+"&nombres="+ nombres+"&apellidos="+apellidos+"&celular="+celular+"&correo="+correo)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/usuario.php?op=update&id="+id+"&idtipo_usuario="+idtipo_usuario+"&nombres="+ nombres+"&apellidos="+apellidos+"&celular="+celular+"&correo="+correo)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -346,7 +392,7 @@ import axios from 'axios';
                     if(valor){
 
                             this.selected.forEach(element => {                        
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=delete&id="+element.idusuario)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/usuario.php?op=delete&id="+element.idusuario)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -376,9 +422,7 @@ import axios from 'axios';
                         let idtipo_usuario = this.selected[0].idtipousuario; 
                         //
                         this.select = this.items_tipos.filter(valor => valor.abbr == idtipo_usuario)[0];
-                        console.log("aqui estoy testeando");
-                        console.log(this.items_tipos);
-
+                        
                       
                         //
                         this.texto_guardar = "Guardar Edición";
@@ -404,7 +448,7 @@ import axios from 'axios';
                 },
                 mostrar(){
                     
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/usuario.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -420,7 +464,7 @@ import axios from 'axios';
                         })
                 },
                 LlenarTipos(){
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_usuario.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_usuario.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -446,7 +490,8 @@ import axios from 'axios';
                 }
             },            
              mounted(){
-                axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=show")
+                 this.$store.state.login = JSON.parse(localStorage.getItem('login'));
+                axios.get(functions.nameServe+"/inventario/Database/BackEnd/usuario.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -461,7 +506,7 @@ import axios from 'axios';
                          console.log(e);
                     })
 
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_usuario.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_usuario.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -494,7 +539,6 @@ import axios from 'axios';
 
 <style lang="scss" scoped>
 .usuario{
-    
     width: 100%;
 }
 @media screen and (max-width : 1000px){

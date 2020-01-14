@@ -7,6 +7,7 @@
                 <v-form
                     ref="form"                    
                     lazy-validation
+                    @submit.prevent="guardar()"
                 >
                     <v-text-field
                     v-model="descripcion"
@@ -112,6 +113,7 @@
 </template>
 
 <script>
+import functions from '@/assets/js/functions'
 import axios from 'axios';
     export default {
         name:'Marca',
@@ -151,6 +153,10 @@ import axios from 'axios';
                 },
                 guardar(){
 
+                    if(!confirm("¿Seguro que desea guardar?")){
+                        return;
+                    }
+
                     let descripcion = this.descripcion;                  
                     let id = parseInt(this.idmarca);
 
@@ -168,7 +174,7 @@ import axios from 'axios';
                     if(!this.eseditar){
 
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=insert&nombre="+ descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/marca.php?op=insert&nombre="+ descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -182,7 +188,7 @@ import axios from 'axios';
                         })
                     }
                     else{
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=update&id="+id+"&nombre="+ descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/marca.php?op=update&id="+id+"&nombre="+ descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -213,7 +219,7 @@ import axios from 'axios';
                     if(valor){
 
                             this.selected.forEach(element => {                        
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=delete&id="+element.idmarca)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/marca.php?op=delete&id="+element.idmarca)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -239,6 +245,7 @@ import axios from 'axios';
                         this.descripcion = this.selected[0].nombre; 
                         this.texto_guardar = "Guardar Edición";
                         this.eseditar = true;
+                        this.mostrar_agregar = true
                     }
                     else{
                         alert("¡Porfavor seleccione una marca!");
@@ -254,7 +261,7 @@ import axios from 'axios';
                 },
                 mostrar(){
                    
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/marca.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -271,7 +278,7 @@ import axios from 'axios';
                 }
             },            
              mounted(){
-                axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=show")
+                axios.get(functions.nameServe+"/inventario/Database/BackEnd/marca.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;

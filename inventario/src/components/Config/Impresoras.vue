@@ -8,6 +8,7 @@
                 <v-form
                     ref="form"                    
                     lazy-validation
+                    @submit.prevent="guardar()"
                 >
 
                     <v-container fluid>
@@ -138,6 +139,7 @@
 </template>
 
 <script>
+import functions from '@/assets/js/functions'
 import axios from 'axios';
     export default {
         name:'Impresora',
@@ -178,6 +180,12 @@ import axios from 'axios';
                    else this.mostrar_agregar = true;
                 },
                 guardar(){
+
+                    
+                    if(!confirm("¿Seguro que desea guardar?")){
+                        return;
+                    }
+
                     let idarea = this.select.abbr;   
                        
                     let descripcion = this.descripcion;                  
@@ -194,7 +202,7 @@ import axios from 'axios';
                    
                     if(!this.eseditar){
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/impresoras.php?op=insert&idarea="+idarea+"&descripcion="+descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/impresoras.php?op=insert&idarea="+idarea+"&descripcion="+descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -209,7 +217,7 @@ import axios from 'axios';
                     }
                     else{
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/impresoras.php?op=update&id="+id+"&idarea="+idarea+"&descripcion="+descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/impresoras.php?op=update&id="+id+"&idarea="+idarea+"&descripcion="+descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -241,7 +249,7 @@ import axios from 'axios';
                     if(valor){
 
                             this.selected.forEach(element => {                        
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/impresoras.php?op=delete&id="+element.idimpresoras)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/impresoras.php?op=delete&id="+element.idimpresoras)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -292,7 +300,7 @@ import axios from 'axios';
                 },
                 mostrar(){
                     
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/impresoras.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/impresoras.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -310,7 +318,7 @@ import axios from 'axios';
             },            
              mounted(){
 
-                 axios.get("http://localhost:8080/inventario/Database/BackEnd/area.php?op=show")
+                 axios.get(functions.nameServe+"/inventario/Database/BackEnd/area.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -334,7 +342,7 @@ import axios from 'axios';
                     })
 
 
-                axios.get("http://localhost:8080/inventario/Database/BackEnd/impresoras.php?op=show")
+                axios.get(functions.nameServe+"/inventario/Database/BackEnd/impresoras.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;

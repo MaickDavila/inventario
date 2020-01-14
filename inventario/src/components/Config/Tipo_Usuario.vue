@@ -5,8 +5,8 @@
             <label class="display-1">Tipo de Usuarios</label>
             <template>
                 <v-form
-                    ref="form"                    
-                    
+                    ref="form"                                        
+                    @submit.prevent="guardar()"
                 >
                     <v-text-field
                     v-model="descripcion"
@@ -111,6 +111,7 @@
 </template>
 
 <script>
+import functions from '@/assets/js/functions'
 import axios from 'axios';
     export default {
         name:'Marca',
@@ -147,6 +148,10 @@ import axios from 'axios';
                 },
                 guardar(){
 
+                    if(!confirm("¿Seguro que desea guardar?")){
+                        return;
+                    }
+
                     let descripcion = this.descripcion;                  
                     let id = parseInt(this.idtipo_usuario);
 
@@ -164,7 +169,7 @@ import axios from 'axios';
                     if(!this.eseditar){
 
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_usuario.php?op=insert&descripcion="+ descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_usuario.php?op=insert&descripcion="+ descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -178,7 +183,7 @@ import axios from 'axios';
                         })
                     }
                     else{
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_usuario.php?op=update&id="+id+"&descripcion="+ descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_usuario.php?op=update&id="+id+"&descripcion="+ descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -209,7 +214,7 @@ import axios from 'axios';
                     if(valor){
 
                             this.selected.forEach(element => {                        
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_usuario.php?op=delete&id="+element.idtipo_usuario)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_usuario.php?op=delete&id="+element.idtipo_usuario)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -252,7 +257,7 @@ import axios from 'axios';
                 },
                 mostrar(){
                     
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_usuario.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_usuario.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -269,7 +274,7 @@ import axios from 'axios';
                 }
             },            
              mounted(){
-                axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_usuario.php?op=show")
+                axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_usuario.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;

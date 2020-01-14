@@ -172,6 +172,7 @@ if ($op != "0") {
                     'dns_alternativo'=> $fila['dns_alternativo'],
                     'dominio'=> $fila['dominio'],
                     'antivirus'=> $fila['antivirus'],
+                    'sistema_operativo'=> $fila['sistema_operativo'],
                     'fecha'=> $fila['fecha'],
                     'estado'=> $fila['estado']                    
                 );

@@ -8,6 +8,7 @@
                 <v-form
                     ref="form"                    
                     lazy-validation
+                    @submit.prevent="guardar()"
                 >
                     <v-text-field
                     v-model="descripcion"
@@ -118,6 +119,7 @@
 </template>
 
 <script>
+import functions from '@/assets/js/functions'
 import axios from 'axios';
     export default {
         name:'Area',
@@ -154,6 +156,10 @@ import axios from 'axios';
                 },
                 guardar(){
 
+                    if(!confirm("¿Seguro que desea guardar?")){
+                        return;
+                    }
+
                     let descripcion = this.descripcion;                  
                     let id = parseInt(this.idarea);
 
@@ -168,7 +174,7 @@ import axios from 'axios';
                    
                     if(!this.eseditar){
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/area.php?op=insert&nombre="+ descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/area.php?op=insert&nombre="+ descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -182,7 +188,7 @@ import axios from 'axios';
                         })
                     }
                     else{
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/area.php?op=update&id="+id+"&nombre="+ descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/area.php?op=update&id="+id+"&nombre="+ descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -213,7 +219,7 @@ import axios from 'axios';
                     if(valor){
 
                             this.selected.forEach(element => {                        
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/area.php?op=delete&id="+element.idarea)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/area.php?op=delete&id="+element.idarea)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -255,7 +261,7 @@ import axios from 'axios';
                 },
                 mostrar(){
                    
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/area.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/area.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -272,7 +278,7 @@ import axios from 'axios';
                 }
             },            
              mounted(){
-                axios.get("http://localhost:8080/inventario/Database/BackEnd/area.php?op=show")
+                axios.get(functions.nameServe+"/inventario/Database/BackEnd/area.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;

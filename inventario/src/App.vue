@@ -1,46 +1,7 @@
 <template>
-  <v-app>
-    <Menu/>
-    <v-content v-if="!this.logueado"  class="login">
-      <div class=" display-1">
-        Ingrese su usuario
-      </div>
-      <!--contenido-->
-      <template>
-        <v-form
-          ref="form"
-          v-model="valid"
-          lazy-validation
-        >
-          <v-text-field
-            v-model="name"
-            :counter="10"
-            :rules="nameRules"
-            label="Name"
-            required
-          ></v-text-field>
-
-          <v-btn
-            :disabled="!valid"
-            color="success"
-            class="mr-4"
-            @click="validate"
-          >
-            Ingresar
-          </v-btn>
-
-          <v-btn
-            color="error"
-            class="mr-4"
-            @click="reset"
-          >
-           Limpiar
-          </v-btn>
-
-        </v-form>
-      </template>
-    </v-content>
-    <router-view></router-view>
+  <v-app>   
+    <HelloWorld/>  
+     
   </v-app>
 </template>
 
@@ -49,6 +10,7 @@ import { mapGetters } from "vuex";
 import axios from 'axios';
 import HelloWorld from './components/HelloWorld';
 import Menu from './components/Menu';
+import functions from '@/assets/js/functions'
 
 
 export default {
@@ -74,33 +36,33 @@ export default {
 
     methods: {
       validate () {
-        console.log("esta validando el login")
+         
         if (this.$refs.form.validate()) {
            
-           axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=login&usuario="+this.name)
+           axios.get(functions.nameServe+"/inventario/Database/BackEnd/usuario.php?op=login&usuario="+this.name)
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
+                         
                        
                         if(respuesta.length > 0){
                             this.items = respuesta;  
-                            console.log(this.items);
-                            console.log("son los items =!!!!");
-                            
+                           
                                       
                             localStorage.setItem('login', JSON.stringify(this.items));      
 
                             this.$store.dispatch('AddLogin', this.items)
+                            
                     
                             this.logueado = true;
 
                             this.items.forEach(element => {
                               let tipo = element.tipo_usuario;
                               if(tipo.toUpperCase() == "ADMIN"){
-                                this.$router.push('/privateChat')                                
+                                this.$router.push('/privateChat');                               
                               }       
                               else{
-                                 this.$router.push('/chat')
+                                 this.$router.push('/chat');
                               }                       
                             });
                             
@@ -126,32 +88,34 @@ export default {
     },
     mounted(){
       
-      if (localStorage.getItem ('login')){
+      if (localStorage.getItem('login')){
         
         this.items = JSON.parse(localStorage.getItem('login')); 
         this.$store.state.login = this.items;
+
+
+        
        
         if(this.items.length>0){
           this.logueado = true;
+          this.$store.dispatch('AddLogin', this.items);
+
+          let admin = (localStorage.getItem('admin'));
+         
+          if(admin === 'true'){
+            this.$store.dispatch('Admin_True');
              
-          // if(this.items[0].tipo_usuario.lowercase != 'admin'){
-          //       this.$router.push('/Privatechat');
-          // }else{
-          //       this.$router.push('/chat');
-          // }
+          }
+          else{
+            this.$store.dispatch('Admin_False');
+          }
+ 
+         
                          
         }
       }
       
     } ,
-    watch: { 
-      todos: { 
-      handler () {           
-          localStorage.setItem('login', JSON.stringify(this.items)); 
-        }, 
-        deep: true, 
-      }, 
-    },
 };
 </script>
 <style scoped>

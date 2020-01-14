@@ -6,7 +6,7 @@
             <template>
                 <v-form
                     ref="form"                    
-                    
+                    @submit.prevent="guardar()"
                 >
                     <v-text-field
                     v-model="descripcion"
@@ -111,6 +111,7 @@
 </template>
 
 <script>
+import functions from '@/assets/js/functions'
 import axios from 'axios';
     export default {
         name:'Marca',
@@ -147,6 +148,12 @@ import axios from 'axios';
                 },
                 guardar(){
 
+                    
+
+                    if(!confirm("¿Seguro que desea guardar?")){
+                        return;
+                    }
+
                     let descripcion = this.descripcion;                  
                     let id = parseInt(this.idtipo_equipo);
 
@@ -164,7 +171,7 @@ import axios from 'axios';
                     if(!this.eseditar){
 
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=insert&descripcion="+ descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_equipo.php?op=insert&descripcion="+ descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -178,7 +185,7 @@ import axios from 'axios';
                         })
                     }
                     else{
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=update&id="+id+"&descripcion="+ descripcion)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_equipo.php?op=update&id="+id+"&descripcion="+ descripcion)
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -209,7 +216,7 @@ import axios from 'axios';
                     if(valor){
 
                             this.selected.forEach(element => {                        
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=delete&id="+element.idtipo_equipo)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_equipo.php?op=delete&id="+element.idtipo_equipo)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -252,7 +259,7 @@ import axios from 'axios';
                 },
                 mostrar(){
                     
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -269,7 +276,7 @@ import axios from 'axios';
                 }
             },            
              mounted(){
-                axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
+                axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;

@@ -9,11 +9,13 @@
 import Menu from '@/components/Menu.vue'
 import Home from '@/components/Home.vue'
 
+
 export default {
   name: 'home',
   components: {
     Home,
-    Menu
+    Menu,
+    
   }
 }
 </script>

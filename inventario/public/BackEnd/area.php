@@ -1,11 +1,13 @@
 <?php
 require("conexion.php");
 
+
 $id = isset($_GET["id"])?$_GET["id"]:"";
 $nombre = isset($_GET["nombre"])?$_GET["nombre"]:"";
 $op = isset($_POST["op"])?$_POST["op"]:"0";
-
 echo $nombre;
+
+ 
 //-------------------------------
 if($op != "0"){
     switch ($op) {

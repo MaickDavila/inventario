@@ -10,19 +10,19 @@
               <h4>Recientes</h4>
             </div>
 
-          <!--
+<!--           
               <div class="srch_bar">
               <div class="stylish-input-group">
-                <input type="text" class="search-bar" v-model="buscar" placeholder="Search" />
+                <input type="text" class="search-bar" v-model="buscar" placeholder="Buscar Mensajes" />
                 <span class="input-group-addon">
                   <button type="button">
                     <i class="fa fa-search" aria-hidden="true"></i>
                   </button>
                 </span>
               </div>
-            </div>
+            </div> -->
 
-          -->
+         
 
           </div>
 
@@ -47,7 +47,7 @@
             <div class="chat_list active_chat" v-for="(index,i ) in ListarMensajes()" :key="i">
               <div class="chat_people">
                 <div class="chat_img">
-                  <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil" />
+                  <img src="https://img.icons8.com/plasticine/2x/user.png" alt="sunil" />
                 </div>
                 <div class="chat_ib">
                   <h5>
@@ -69,7 +69,7 @@
             </div>
           </div>
         </div>
-     <notifications group="foo" />
+     
       </div>
     </div>
 
@@ -88,6 +88,7 @@
                               <v-textarea
                                 v-model="descripcion"
                                 color="teal"
+                                @keyup.enter="GuardarCambioSoporte()"
                                 :readonly="readOnly"
                               >
                                 <template v-slot:label>
@@ -104,13 +105,13 @@
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn color="blue darken-1" text @click="dialog = false">Cerrar</v-btn>
-                      <v-btn color="blue darken-1" text @click="GuardarCambioSoporte()">Guardar</v-btn>
+                      <v-btn color="blue darken-1" text @click="GuardarCambioSoporte()" >Guardar</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
               </v-row>
             </template>
-
+  <notifications group="foo" />
   </div>
 </template>
 
@@ -118,6 +119,7 @@
 import axios from "axios";
 import io from 'socket.io-client';
 import Solucion from '@/components/Config/Solucion.vue';
+import functions from '@/assets/js/functions'
 
 export default {
   data() {
@@ -144,8 +146,9 @@ export default {
     };
   },
   created() {
-  
-    this.socket = io("http://localhost:3000")
+   
+    this.socket = io(functions.nameSocket)
+    
     this.fecthMessages();
    
   },
@@ -153,13 +156,11 @@ export default {
     this.countMessages = 0;
     this.newCount = 0;
   },
-   mounted(){
-    this.Escuchar();
+   mounted(){     
     
+    this.Escuchar();
   },
   methods: {
- 
-
     Escuchar(){
         this.socket.on('chat',data=>{
         this.messages = data;
@@ -208,20 +209,28 @@ export default {
         let mensaje = this.messages.filter(element => element.data.id == id);        
         this.descripcion = mensaje[0].data.mensaje_soporte;
       }
+
     },
     GuardarCambioSoporte(){
-      console.log("this.descripcion");
-      console.log(this.descripcion);
-      axios.get("http://localhost:8080/inventario/Database/BackEnd/chat.php?op=insertMesage&idsoporte="+this.idtemp+"&estado="+1+"&mensaje="+this.descripcion)
+      axios.get(functions.nameServe+"/inventario/Database/BackEnd/chat.php?op=insertMesage&idsoporte="+this.idtemp+"&estado="+1+"&mensaje="+this.descripcion)
           .then(response => {
               // Obtenemos los datos
-              console.log(response);              
-              this.dialog = false;   
+                     
+              this.dialog = false; 
+               axios.get(functions.nameServe+"/inventario/Database/BackEnd/chat.php?op=showMensajes")
+                  .then(response => {
+                
+                     this.messages = response.data;
+                  })
+                  .catch(e => {
+                      // Capturamos los errores
+                });  
                
           })
           .catch(e => {
               // Capturamos los errores
         });
+
 
     },
     saveMessage() {
@@ -233,12 +242,13 @@ export default {
       this.socket.on('chat',data=>{
         this.messages = data;
 
-        this.newCount = data.length;
+      this.newCount = data.length;
        if(this.newCount>this.countMessages){
         this.$notify({
           group: 'foo',
-          title: 'Nuevo Mensaje',
-          text: '!'
+          title: 'Nuevo',             
+          duration: 1,
+          position:"left"
         });
       }
       });
@@ -250,7 +260,7 @@ export default {
 
 <style scoped="">
 .container {
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
 }
 

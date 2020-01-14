@@ -1,6 +1,5 @@
 <template>
     <div class="app">
-       
     </div>
 </template>
 
@@ -48,18 +47,38 @@ import axios from 'axios';
       Asignar(){
         let item =  JSON.parse(localStorage.getItem('login'));
         this.$store.state.login = item;   
-        
-        let tipo = item[0].tipo_usuario;
-        if(tipo.toUpperCase() == "ADMIN"){
-          this.$router.push('/privateChat')                                
-        }       
-        else{
-            this.$router.push('/chat')
+        if(item.length>0){
+            let tipo = item[0].tipo_usuario;
+          
+              if(tipo.toUpperCase() == "ADMIN"){
+                  this.$router.push('/privateChat')                                
+                }       
+                else{
+                    this.$router.push('/chat')
+                }
+            
+
+            
+          
+        }else{
+          this.$router.push('/login')
+          
+          
         }
+        
+
+           
+      
       },
     },
     mounted(){
       this.Asignar()
+    
+      
+    },
+    created(){
+      
+      
     }
 
 }

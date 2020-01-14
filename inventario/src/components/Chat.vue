@@ -1,5 +1,99 @@
 <template>
-  <div>
+
+ 
+  <div class="pa">
+
+    <v-row>
+      <v-col>
+<v-card
+        class="mx-auto ml-10"  
+        elevation-10
+        outlined
+      >
+    <h3 class="mt-4 text-center">Datos de propietario</h3>
+    <v-list-item three-line>
+      <v-list-item-content>
+   
+       <div class="overline mb-4 ">Nombre</div>
+        <v-list-item-title class="headline mb-1">{{cached.nombre_usuario}}</v-list-item-title>
+       
+       
+<!--         
+         <div class="overline mb-4 mt-4">Apellido</div>
+        <v-list-item-title class="headline mb-1">{{cached.celular}}</v-list-item-title> -->
+
+        
+         <div class="overline mb-4 mt-4">Celular</div>
+        <v-list-item-title class="headline mb-1">{{cached.celular}}</v-list-item-title>
+
+        
+         <div class="overline mb-4 mt-4">Correo</div>
+        <v-list-item-title class="headline mb-1">{{cached.correo}}</v-list-item-title>
+
+        
+         <div class="overline mb-4 mt-4">Tipo de usuario</div>
+        <v-list-item-title class="headline mb-1">{{cached.tipo_usuario}}</v-list-item-title>
+
+       
+
+         <div class="overline mb-4 mt-4">Equipo Propietario</div>
+        <v-list-item-title class="headline mb-1">{{cached.nombre_usuario}}</v-list-item-title>
+       
+
+        
+      </v-list-item-content>
+
+     
+    </v-list-item>
+
+    <v-card-actions>
+      <!-- <v-btn text>Button</v-btn>
+      <v-btn text>Button</v-btn> -->
+    </v-card-actions>
+  </v-card>
+
+      </v-col>
+      
+
+
+<v-col>
+       <v-card
+          elevation-10
+          class="mx-auto ml-10 mr-10"  
+          outlined
+  >
+    <h3 class="mt-4  text-center ">Datos de equipo</h3>
+    <v-list-item three-line>
+      <v-list-item-content>
+   
+      
+        <div class="overline mb-4 ">Area</div>
+      <v-list-item-title class="headline mb-1">{{data_equipo.area}}</v-list-item-title>
+       
+       
+        
+         <div class="overline mb-4 mt-4">Usuario</div>
+        <v-list-item-title class="headline mb-1">{{data_equipo.usuario}}</v-list-item-title>
+
+        
+         <div class="overline mb-4 mt-4">Nombre Equipo</div>
+        <v-list-item-title class="headline mb-1">{{data_equipo.nombre_equipo}}</v-list-item-title>
+
+      </v-list-item-content>
+
+    </v-list-item>
+
+    <v-card-actions>
+      <!-- <v-btn text>Button</v-btn>
+      <v-btn text>Button</v-btn> -->
+    </v-card-actions>
+  </v-card>
+</v-col>
+</v-row>
+
+  
+                      
+
     <beautiful-chat
       :participants="participants"
       :onMessageWasSent="onMessageWasSent"
@@ -9,8 +103,8 @@
       :close="closeChat"
       :icons="icons"
       :open="openChat"
-      :showEmoji="true"
-      :showFile="true"
+      :showEmoji="false"
+      :showFile="false"
       :showTypingIndicator="showTypingIndicator"
       :colors="colors"
       :alwaysScrollToBottom="alwaysScrollToBottom"
@@ -27,11 +121,28 @@ import FileIcon from 'vue-beautiful-chat/src/assets/file.svg'
 import CloseIconSvg from 'vue-beautiful-chat/src/assets/close.svg'
 import io from 'socket.io-client'
 import axios from 'axios';
+import functions from '@/assets/js/functions'
+
  
 export default {
   name: 'app',
   data() {
     return {
+      singleSelect:true,
+      selected: [],
+      cached:[],
+      data_equipo:[],
+      headers: [
+
+      {
+          text: 'Id Area',          
+          value: 'idarea',
+      },          
+      { text: 'Nombre', value: 'nombre' },
+      { text: 'Estado', value: 'estado' },
+      
+      ],
+      items:[], 
       socket:{},
       usuario_emisor : null,
       context:{},
@@ -97,16 +208,28 @@ export default {
     }
   },
   created() {
-    this.socket = io("http://localhost:3000")
-     
+     this.socket = io(functions.nameSocket)
   },
   mounted(){
-  
+    //  var host = window.location.protocol + "//" + window.location.network;
+    //  console.log(host)
+       
       this.items = JSON.parse(localStorage.getItem('login')); 
       if(this.items.length>0){
         this.usuario_emisor = this.items[0].idusuario_equipo;
+        this.cached = this.items[0]
         
-    }
+        axios.get(functions.nameServe+"/inventario/Database/BackEnd/usuario_equipo.php?op=show2&id="+this.items[0].idequipo)
+        .then(response => {
+            // Obtenemos los datos
+           this.data_equipo = response.data;
+          // console.log(this.data_equipo)
+        })
+        .catch(e => {
+          // console.log("Exepcion " + e)
+            // Capturamos los errores
+        })
+      }
 
     this.socket.emit('chatCliente',this.usuario_emisor)
 
@@ -120,7 +243,7 @@ export default {
         });
     },
     sendMessage (text) {
-      console.log("aqui esta el id del usuario=>" + text);
+      
       if (text.length > 0) {
         this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
         var  user = this.usuario_emisor;
@@ -166,5 +289,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.pa{
+  padding-top: 100px;
+}
 </style>

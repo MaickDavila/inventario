@@ -8,7 +8,9 @@
             <template>
                 <v-form
                     ref="form"                    
-                    lazy-validation
+                    lazy-validation             
+                    @submit.prevent="guardar()"
+
                 >
 
                     <template>
@@ -209,12 +211,6 @@
                     </v-toolbar>
                     <v-list three-line subheader>
                     <v-subheader></v-subheader>
-                    
-                    
-
-
-
-
             <v-card
                 class="mx-auto"
                 max-width="344"
@@ -341,30 +337,32 @@
         <div class=" align-content-end flex-grow-1">
                     
                     <template>  
-                        <v-card>
+                        <v-card style="width:99%;">
 
-                            <v-card-title>                    
+                            <v-card-title id="cabecera">                    
                                 <v-text-field
                                     v-model="search"                        
                                     label="Buscar"
-                                    single-line 
-                                    class=""                       
+                                    single-line                                    
+                                    id="txtbuscar"                      
                                 >                       
                                 </v-text-field>
 
-                                <v-spacer></v-spacer>
+                                
 
-                                <div class="text-center">
-                                      <!-- <template v-slot:activator="{ on }"> -->
-                                        <!-- <v-btn color="primary" dark v-on="on">Ver Propietario</v-btn> -->
-                                    <!-- </template> -->
-                                    <v-btn class="ma-2" tile color="primary" dark @click="verPropietario">Ver Propietario</v-btn>  
-                                    <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
-                                    <v-btn class="ma-2" tile outlined color="success" @click="editarEvento">
-                                    <v-icon left>mdi-pencil</v-icon> Editar
-                                    </v-btn>
-                                    <v-btn class="ma-2" tile color="error" dark @click="EventoBorrar(false)">Borar</v-btn>
+                                <div class="text-center" id="botones_padre">
+                                     <div id="botones">
+                                          <!-- <template v-slot:activator="{ on }"> -->
+                                                <!-- <v-btn color="primary" dark v-on="on">Ver Propietario</v-btn> -->
+                                            <!-- </template> -->
+                                            <v-btn class="ma-2" tile color="primary" dark @click="verPropietario">Ver Propietario</v-btn>  
+                                            <v-btn class="ma-2" tile color="success" dark @click="agregarEvento">Nuevo</v-btn>                                   
+                                            <v-btn class="ma-2" tile outlined color="success" @click="editarEvento">
+                                            <v-icon left>mdi-pencil</v-icon> Editar
+                                            </v-btn>
+                                            <v-btn class="ma-2" tile color="error" dark @click="EventoBorrar(false)">Borar</v-btn>
                                     
+                                     </div>
                                     
                                 </div>
 
@@ -423,6 +421,7 @@
 </template>
 
 <script>
+import functions from '@/assets/js/functions'
 import axios from 'axios';
     export default {
         name:'Equipo',
@@ -514,7 +513,7 @@ import axios from 'axios';
                 InsertarPropietarioEvent(){
                     this.modal_add_propietario = true;
                     
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/usuario.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/usuario.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -543,7 +542,7 @@ import axios from 'axios';
                         })
 
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/area.php?op=show")
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/area.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -579,7 +578,7 @@ import axios from 'axios';
                        
                        
                            
-                                axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=CambiarPropietario&id="+id)
+                                axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=CambiarPropietario&id="+id)
                                         .then(response => {
                                             // Obtenemos los datos
                                             let respuesta = response.data;
@@ -610,7 +609,7 @@ import axios from 'axios';
                    let idequipo = this.selected[0].id;
     
                     this.selected.forEach(element => {                  
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=insertPropietario&idarea="+idarea+"&idusuario="+idusuario+"&id="+idequipo)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=insertPropietario&idarea="+idarea+"&idusuario="+idusuario+"&id="+idequipo)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -632,7 +631,7 @@ import axios from 'axios';
                 },
 
                 LlenarTipos(){
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -658,7 +657,7 @@ import axios from 'axios';
 
                         //
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=show")
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/marca.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -701,7 +700,7 @@ import axios from 'axios';
                    if(tamanio>0){
                        
                        this.dialog_modal = true;
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=showPropietario&id="+idquipo)
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=showPropietario&id="+idquipo)
                         .then(response => {
                          
                         let respuesta = response.data;
@@ -722,6 +721,11 @@ import axios from 'axios';
                     }  
                 },
                 guardar(){
+
+                    if(!confirm("¿Seguro que desea guardar?")){
+                        return;
+                    }
+
 
                     let idmarca = this.select_marca.abbr;
                     let idtipo_equipo = this.select_tipo_equipo.abbr;
@@ -752,7 +756,7 @@ import axios from 'axios';
                     if(!this.eseditar){
                       
 
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=insert&idmarca="+ idmarca+"&idtipo_equipo="+idtipo_equipo+"&nombre_equio="+nombre_equipo+
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=insert&idmarca="+ idmarca+"&idtipo_equipo="+idtipo_equipo+"&nombre_equio="+nombre_equipo+
                         "&usuario_equipo="+usuario_equipo+"&procesador="+procesador+"&memoria_ram="+memoria_ram+"&disco_duro="+disco_duro+"&ip="+ip+"&mascara_sub_red="+mascara_sub_red+
                         "&puerta_enlace="+puerta_enlace+"&dns_preferido="+dns_preferido+"&dns_alternativo="+dns_alternativo+"&dominio="+dominio+"&antivirus="+antivirus+"&sistema_operativo="+sistema_operativo)
                         .then(response => {
@@ -771,7 +775,7 @@ import axios from 'axios';
                     }
                     else{
                        
-                        axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=update&id="+id+"&idmarca="+ idmarca+"&idtipo_equipo="+idtipo_equipo+"&nombre_equio="+nombre_equipo+
+                        axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=update&id="+id+"&idmarca="+ idmarca+"&idtipo_equipo="+idtipo_equipo+"&nombre_equio="+nombre_equipo+
                         "&usuario_equipo="+usuario_equipo+"&procesador="+procesador+"&memoria_ram="+memoria_ram+"&disco_duro="+disco_duro+"&ip="+ip+"&mascara_sub_red="+mascara_sub_red+
                         "&puerta_enlace="+puerta_enlace+"&dns_preferido="+dns_preferido+"&dns_alternativo="+dns_alternativo+"&dominio="+dominio+"&antivirus="+antivirus+"&sistema_operativo="+sistema_operativo)
                         .then(response => {
@@ -806,7 +810,7 @@ import axios from 'axios';
                             
 
                             this.selected.forEach(element => {                  
-                            axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=delete&id="+element.id)
+                            axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=delete&id="+element.id)
                             .then(response => {
                                 // Obtenemos los datos
                                 let respuesta = response.data;
@@ -893,7 +897,7 @@ import axios from 'axios';
                 },
                 mostrar(){
                  
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=show")
                         .then(response => {
                             // Obtenemos los datos
                             let respuesta = response.data;
@@ -909,7 +913,7 @@ import axios from 'axios';
                         })
                 },
                 mostrarTipos(){
-                     axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
+                     axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -935,7 +939,7 @@ import axios from 'axios';
                     })
                 },
                 mostrarMarcas(){
-                                 axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=show")
+                                 axios.get(functions.nameServe+"/inventario/Database/BackEnd/marca.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -959,15 +963,13 @@ import axios from 'axios';
                     })
                 }
                 },
-            watch(){
-                this.mostrarMarcas()
-            }   ,        
+              
              mounted(){
 
               
 
                         
-                axios.get("http://localhost:8080/inventario/Database/BackEnd/equipo.php?op=show")
+                axios.get(functions.nameServe+"/inventario/Database/BackEnd/equipo.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -984,7 +986,7 @@ import axios from 'axios';
 
                     //marcas
                    
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/marca.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/marca.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -1010,7 +1012,7 @@ import axios from 'axios';
 
                     //tipo-equipos
 
-                    axios.get("http://localhost:8080/inventario/Database/BackEnd/tipo_equipo.php?op=show")
+                    axios.get(functions.nameServe+"/inventario/Database/BackEnd/tipo_equipo.php?op=show")
                     .then(response => {
                         // Obtenemos los datos
                         let respuesta = response.data;
@@ -1040,5 +1042,20 @@ import axios from 'axios';
 </script>
 
 <style lang="scss" scoped>
+
+#cabecera{
+    display: flex;
+    flex-direction: row;
+}
+#txtbuscar{
+    flex-grow: 1;
+}
+#botones_padre{
+    flex-grow: 1;    
+}
+#botones{
+    float: right;
+    padding-right: 50px;
+}
  
 </style>
